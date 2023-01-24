@@ -32,9 +32,15 @@ public class OAuthAttributes {
     }
 
     public static OAuthAttributes of(String registrationId, String nameAttributeKey, Map<String, Object> attributes) {
+        System.out.println(attributes);
+        System.out.println(registrationId);
+        System.out.println(nameAttributeKey);
         if(registrationId.equalsIgnoreCase(AuthProvider.kakao.toString())) {
             return ofKakao(nameAttributeKey, attributes);
-        } else {
+        } else if (registrationId.equalsIgnoreCase(AuthProvider.github.toString())) {
+            return ofGithub(nameAttributeKey, attributes);
+        }
+        else {
             throw new OAuth2AuthenticationProcessingException("Sorry! Login with " + registrationId + " is not supported yet.");
         }
     }
@@ -46,6 +52,19 @@ public class OAuthAttributes {
         return OAuthAttributes.builder()
                 .name((String) kakaoProfile.get("nickname"))
                 .email((String) kakaoAccount.get("email"))
+                .nameAttributeKey(nameAttributeKey)
+                .attributes(attributes)
+                .build();
+    }
+
+    private static OAuthAttributes ofGithub(String nameAttributeKey, Map<String, Object> attributes) {
+        String gitAccount = (String) attributes.get("login");
+        System.out.println(gitAccount);
+//        Map<String, Object> kakaoProfile = (Map<String, Object>)kakaoAccount.get("profile");
+
+        return OAuthAttributes.builder()
+                .name(gitAccount)
+                .email(gitAccount)
                 .nameAttributeKey(nameAttributeKey)
                 .attributes(attributes)
                 .build();

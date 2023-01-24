@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -79,6 +80,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private User updateExistingUser(User user, OAuthAttributes attributes) {
         user.setName(attributes.getName());
         user.setImageUrl(attributes.getProfile());
+        user.setUpdatedDate(LocalDateTime.now());
         return userRepository.save(user);
     }
 }

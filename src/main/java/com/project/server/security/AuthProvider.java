@@ -2,5 +2,6 @@ package com.project.server.security;
 
 public enum AuthProvider {
     local,
-    kakao
+    kakao,
+    github
 }
