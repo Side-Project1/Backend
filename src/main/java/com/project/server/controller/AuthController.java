@@ -1,5 +1,6 @@
 package com.project.server.controller;
 
+import com.project.server.entity.Role;
 import com.project.server.entity.User;
 import com.project.server.exception.BadRequestException;
 import com.project.server.http.ApiResponse;
@@ -62,6 +63,7 @@ public class AuthController {
                 .email(signUpRequest.getEmail())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .provider(AuthProvider.local)
+                .role(Role.USER)
                 .build();
 
         User result = userRepository.save(user);
