@@ -8,6 +8,8 @@ import com.project.server.http.LoginRequest;
 import com.project.server.repository.UserRepository;
 import com.project.server.security.CustomUserPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +24,7 @@ public class UserController {
 
     @GetMapping("/user/me")
     public User getCurrentUser(@RequestBody LoginRequest loginRequest) {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());
         return userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", loginRequest.getEmail()));
     }

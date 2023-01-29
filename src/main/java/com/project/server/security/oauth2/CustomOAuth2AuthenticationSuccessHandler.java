@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.project.server.security.oauth2.CustomAuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
@@ -54,10 +55,11 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthentic
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
-        String token = tokenProvider.createToken(authentication);
-
+        Map<String, String> tokens = tokenProvider.createToken(authentication);
+        response.addHeader("accessToken", tokens.get("accessToken"));
+        response.addHeader("refreshToken", tokens.get("refreshToken"));
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", token)
+                .queryParam("token", tokens.get("accessToken"))
                 .build().toUriString();
     }
 

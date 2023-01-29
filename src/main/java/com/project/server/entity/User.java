@@ -33,4 +33,6 @@ public class User extends BaseTime {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
+    @Column
+    private String refreshToken;
 }
