@@ -40,7 +40,6 @@ public class TokenProvider {
                 .compact();
 
         String refreshToken = Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
                 .setExpiration(expiryDate) // 시간 변경 예정
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
@@ -57,7 +56,6 @@ public class TokenProvider {
                 .setSigningKey(appProperties.getAuth().getTokenSecret())
                 .parseClaimsJws(token)
                 .getBody();
-        System.out.println("@"+ claims);
         return Long.parseLong(claims.getSubject());
     }
 

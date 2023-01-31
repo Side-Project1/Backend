@@ -2,9 +2,10 @@ package com.project.server.http;
 
 public class AuthResponse {
     private String accessToken;
+    private String refreshToekn;
     private String tokenType = "Bearer";
 
-    public AuthResponse(String accessToken) {
+    public AuthResponse(String accessToken, String refreshToekn) {
         this.accessToken = accessToken;
     }
 
