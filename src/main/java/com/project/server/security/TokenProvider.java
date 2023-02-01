@@ -33,7 +33,7 @@ public class TokenProvider {
         Map<String, String> tokens = new HashMap<>();
 
         String accessToken = Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(Long.toString(userPrincipal.getId()))   // email로 바꾸면 관련된 것들 다 email로 바꿔야함
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
