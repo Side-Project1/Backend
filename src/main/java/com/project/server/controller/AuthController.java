@@ -1,8 +1,10 @@
 package com.project.server.controller;
 
+import com.project.server.dto.DefaultResponse;
 import com.project.server.entity.Role;
 import com.project.server.entity.User;
 import com.project.server.exception.BadRequestException;
+import com.project.server.exception.ResourceNotFoundException;
 import com.project.server.http.ApiResponse;
 import com.project.server.http.AuthResponse;
 import com.project.server.http.LoginRequest;
@@ -17,12 +19,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.Map;
 
@@ -77,4 +78,8 @@ public class AuthController {
                 .body(new ApiResponse(true, "User registered successfully@"));
     }
 
+    @GetMapping("/refreshtoken/{userId}")
+    public DefaultResponse getRefreshToken(@PathVariable(name = "userId") Long id, HttpServletRequest req, HttpServletResponse rep){
+        return tokenProvider.getTokenFromRefreshToken(id, rep);
+    }
 }

@@ -2,6 +2,8 @@ package com.project.server.security.oauth2;
 
 import com.project.server.config.AppProperties;
 import com.project.server.exception.BadRequestException;
+import com.project.server.repository.UserRepository;
+import com.project.server.security.CustomUserPrincipal;
 import com.project.server.security.TokenProvider;
 import com.project.server.util.CustomCookie;
 import lombok.RequiredArgsConstructor;

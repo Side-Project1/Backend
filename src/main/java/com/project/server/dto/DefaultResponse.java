@@ -1,7 +1,9 @@
 package com.project.server.dto;
 
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
+@Data
 public class DefaultResponse<T> {
     private String message;
     private int status;
