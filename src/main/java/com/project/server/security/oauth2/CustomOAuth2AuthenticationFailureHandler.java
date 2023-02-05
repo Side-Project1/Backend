@@ -29,10 +29,12 @@ public class CustomOAuth2AuthenticationFailureHandler extends SimpleUrlAuthentic
                 .map(Cookie::getValue)
                 .orElse(("/"));
 
+        System.out.println(targetUrl);
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("error", exception.getLocalizedMessage())
                 .build().toUriString();
 
+        System.out.println(targetUrl);
         customAuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);

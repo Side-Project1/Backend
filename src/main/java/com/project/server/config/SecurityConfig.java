@@ -69,7 +69,7 @@ public class SecurityConfig {
                     .accessDeniedHandler(new CustomAccessDeniedHandler())
                     .and()
                 .authorizeRequests()    // 요청에 대한 사용권한 체크
-                    .antMatchers("**").permitAll()
+                    .antMatchers("/auth/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .oauth2Login()

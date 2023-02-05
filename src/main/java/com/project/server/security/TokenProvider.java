@@ -7,6 +7,7 @@ import com.project.server.exception.ResourceNotFoundException;
 import com.project.server.repository.UserRepository;
 import com.project.server.util.CustomCookie;
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,9 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+@Slf4j
 @Service
 public class TokenProvider {
 
@@ -39,7 +42,7 @@ public class TokenProvider {
         Map<String, String> tokens = new HashMap<>();
 
         String accessToken = Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))   // email로 바꾸면 관련된 것들 다 email로 바꿔야함
+                .setSubject(String.valueOf(userPrincipal.getId()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec()))      // 30분
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
@@ -59,23 +62,23 @@ public class TokenProvider {
         return tokens;
     }
 
-    public String createAccessToken(Long id) {
+    public String createAccessToken(UUID userId) {
         Date now = new Date();
 
         return Jwts.builder()
-                .setSubject(Long.toString(id))
+                .setSubject(String.valueOf(userId))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec()))      // 30분
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
     }
 
-    public Long getUserIdFromToken(String token) {
+    public UUID getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(appProperties.getAuth().getTokenSecret())
                 .parseClaimsJws(token)
                 .getBody();
-        return Long.parseLong(claims.getSubject());
+        return UUID.fromString(claims.getSubject());
     }
 
     public boolean validateToken(String authToken) {
@@ -83,21 +86,21 @@ public class TokenProvider {
             Jwts.parser().setSigningKey(appProperties.getAuth().getTokenSecret()).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
-            logger.error("Invalid JWT signature");
+            log.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token");
+            log.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            logger.error("Expired JWT token");
+            log.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            logger.error("Unsupported JWT token");
+            log.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            logger.error("JWT claims string is empty.");
+            log.error("JWT claims string is empty.");
         }
         return false;
     }
 
-    public boolean reGenerateRefreshToken(Long userId) {
-        logger.info("refreshToken 재발급 요청");
+    public boolean reGenerateRefreshToken(UUID userId) {
+        log.info("refreshToken 재발급 요청");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         String refreshToken = user.getRefreshToken();
@@ -106,38 +109,37 @@ public class TokenProvider {
 
         // refreshToken 정보가 존재하지 않는 경우
         if(refreshToken == null) {
-            logger.info("refreshToken 정보가 존재하지 않습니다.");
+            log.info("refreshToken 정보가 존재하지 않습니다.");
             return false;
         }
 
         // refreshToken 만료 여부 체크
         try {
             Jwts.parser().setSigningKey(appProperties.getAuth().getTokenSecret()).parseClaimsJws(refreshToken);
-            logger.info("refreshToken 만료되지 않았습니다.");
+            log.info("refreshToken 만료되지 않았습니다.");
             return true;
         } catch(ExpiredJwtException e) {    // refreshToken이 만료된 경우 재발급
             user.setRefreshToken(Jwts.builder()
-                    .setSubject(Long.toString(user.getId()))
+                    .setSubject(String.valueOf(user.getId()))
                     .setExpiration(expiryDate) // 시간 변경 예정
                     .setIssuedAt(new Date(System.currentTimeMillis()))
                     .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                     .compact());
-            logger.info("refreshToken 재발급 완료 : {}", "Bearer " + user.getRefreshToken());
+            log.info("refreshToken 재발급 완료 : {}", "Bearer " + user.getRefreshToken());
             return true;
         } catch(Exception e) {
-            logger.error("refreshToken 재발급 중 문제 발생 : {}", e.getMessage());
+            log.error("refreshToken 재발급 중 문제 발생 : {}", e.getMessage());
             return false;
         }
     }
 
-    public DefaultResponse getTokenFromRefreshToken(Long userId, HttpServletResponse rep) {
+    public DefaultResponse getTokenFromRefreshToken(UUID userId, HttpServletResponse rep) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         String refreshToken = user.getRefreshToken();
 
         try {
             Jwts.parser().setSigningKey(appProperties.getAuth().getTokenSecret()).parseClaimsJws(refreshToken);
             String accessToken = createAccessToken(userId);
-            System.out.println(accessToken);
             CustomCookie.addCookie(rep, "accessToken", accessToken, 60*30);
             return new DefaultResponse("access 토근 재발급", HttpStatus.OK);
         } catch(ExpiredJwtException e) {    // refreshToken이 만료된 경우 재발급

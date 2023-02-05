@@ -4,7 +4,6 @@ import com.project.server.dto.DefaultResponse;
 import com.project.server.entity.Role;
 import com.project.server.entity.User;
 import com.project.server.exception.BadRequestException;
-import com.project.server.exception.ResourceNotFoundException;
 import com.project.server.http.ApiResponse;
 import com.project.server.http.AuthResponse;
 import com.project.server.http.LoginRequest;
@@ -26,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -78,8 +78,20 @@ public class AuthController {
                 .body(new ApiResponse(true, "User registered successfully@"));
     }
 
+    @GetMapping("/token")
+    public ApiResponse kakaoCallback(@RequestParam String token){
+        String response = "성공적으로 카카오 로그인 API 코드를 불러왔습니다.";
+        System.out.println(token);
+        return new ApiResponse(true, response);
+    }
+
     @GetMapping("/refreshtoken/{userId}")
-    public DefaultResponse getRefreshToken(@PathVariable(name = "userId") Long id, HttpServletRequest req, HttpServletResponse rep){
+    public DefaultResponse getRefreshToken(@PathVariable(name = "userId") UUID id, HttpServletRequest req, HttpServletResponse rep){
         return tokenProvider.getTokenFromRefreshToken(id, rep);
+    }
+
+    @GetMapping("/error")
+    public ApiResponse errorPage(@RequestParam String error) {
+        return new ApiResponse(true, error);
     }
 }

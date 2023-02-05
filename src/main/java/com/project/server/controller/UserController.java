@@ -21,15 +21,11 @@ public class UserController {
 
     @GetMapping("/user/me")
     public User getCurrentUser(@RequestBody LoginRequest loginRequest) {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());   //테스트 용
         return userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", loginRequest.getEmail()));
     }
 
 
-    @GetMapping("/auth/token")
-    public ApiResponse kakaoCallback(@RequestParam String token){
-        String response = "성공적으로 카카오 로그인 API 코드를 불러왔습니다.";
-        System.out.println(token);
-        return new ApiResponse(true, response);
-    }
+
 }
