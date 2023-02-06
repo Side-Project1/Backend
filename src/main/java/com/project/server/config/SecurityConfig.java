@@ -33,6 +33,9 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomOAuth2AuthenticationSuccessHandler oAuth2AuthorizationSuccessHandler;
     private final CustomOAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().antMatchers("/images/**", "/js/**", "/webjars/**");
@@ -65,11 +68,12 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .httpBasic().disable()  // rest api 만을 고려하여 기본 설정 해제, 해제 안할 시 기본 로그인 창 나옴
                 .exceptionHandling()
-                    .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                    .accessDeniedHandler(new CustomAccessDeniedHandler())
+                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+                    .accessDeniedHandler(customAccessDeniedHandler)
                     .and()
-                .authorizeRequests()    // 요청에 대한 사용권한 체크
+                .authorizeHttpRequests()    // 요청에 대한 사용권한 체크
                     .antMatchers("/auth/**").permitAll()
+                    .antMatchers("/oauth2/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .oauth2Login()

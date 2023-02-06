@@ -13,13 +13,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class userToken {
+public class UserToken {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_token_id", columnDefinition = "BINARY(16)")
+    @Column(name = "token_id", columnDefinition = "BINARY(16)")
     private UUID id;
     private String refreshToken;
-    @OneToOne
-    @JoinColumn(name="user_id")
-    private User user;
 }

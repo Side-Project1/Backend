@@ -58,8 +58,7 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthentic
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
         Map<String, String> tokens = tokenProvider.createToken(authentication);
-        response.addHeader("accessToken", tokens.get("accessToken"));
-        response.addHeader("refreshToken", tokens.get("refreshToken"));
+        response.setHeader("Authorization", tokens.get("accessToken"));
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", tokens.get("accessToken"))
                 .build().toUriString();
