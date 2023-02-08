@@ -72,6 +72,7 @@ public class SecurityConfig {
                     .accessDeniedHandler(customAccessDeniedHandler)
                     .and()
                 .authorizeHttpRequests()    // 요청에 대한 사용권한 체크
+                    .antMatchers( "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs").permitAll()
                     .antMatchers("/auth/**").permitAll()
                     .antMatchers("/oauth2/**").permitAll()
                     .anyRequest().authenticated()

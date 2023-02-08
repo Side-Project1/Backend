@@ -2,7 +2,7 @@ package com.project.server.controller;
 
 import com.project.server.dto.DefaultResponse;
 import com.project.server.entity.Role;
-import com.project.server.entity.User;
+import com.project.server.entity.Users;
 import com.project.server.exception.BadRequestException;
 import com.project.server.http.ApiResponse;
 import com.project.server.http.AuthResponse;
@@ -60,7 +60,7 @@ public class AuthController {
         }
 
         // Creating user's account
-        User user = User.builder()
+        Users users = Users.builder()
                 .name(signUpRequest.getName())
                 .email(signUpRequest.getEmail())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
@@ -68,7 +68,7 @@ public class AuthController {
                 .role(Role.USER)
                 .build();
 
-        User result = userRepository.save(user);
+        Users result = userRepository.save(users);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/user/me")

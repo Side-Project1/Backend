@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class User extends BaseTime {
+public class Users extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id", columnDefinition = "BINARY(16)")
@@ -35,6 +35,9 @@ public class User extends BaseTime {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
-    @Column
-    private String refreshToken;
+//    @Column
+//    private String refreshToken;
+    @OneToOne
+    @JoinColumn(name = "token_id")
+    private UserToken userToken;
 }

@@ -18,5 +18,6 @@ public class UserToken {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "token_id", columnDefinition = "BINARY(16)")
     private UUID id;
+    @Column
     private String refreshToken;
 }

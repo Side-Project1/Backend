@@ -1,6 +1,6 @@
 package com.project.server.security;
 
-import com.project.server.entity.User;
+import com.project.server.entity.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,20 +22,20 @@ public class CustomUserPrincipal  implements OAuth2User, UserDetails {
         this.authorities = authorities;
     }
 
-    public static CustomUserPrincipal create(User user) {
+    public static CustomUserPrincipal create(Users users) {
         List<GrantedAuthority> authorities = Collections.
                 singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
         return new CustomUserPrincipal(
-                user.getId(),
-                user.getEmail(),
-                user.getPassword(),
+                users.getId(),
+                users.getEmail(),
+                users.getPassword(),
                 authorities
         );
     }
 
-    public static CustomUserPrincipal create(User user, Map<String, Object> attributes) {
-        CustomUserPrincipal userPrincipal = CustomUserPrincipal.create(user);
+    public static CustomUserPrincipal create(Users users, Map<String, Object> attributes) {
+        CustomUserPrincipal userPrincipal = CustomUserPrincipal.create(users);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
     }

@@ -1,7 +1,7 @@
 package com.project.server.security;
 
 
-import com.project.server.entity.User;
+import com.project.server.entity.Users;
 import com.project.server.exception.ResourceNotFoundException;
 import com.project.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,20 +23,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
+        Users users = userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email : " + email)
         );
 
-        return CustomUserPrincipal.create(user);
+        return CustomUserPrincipal.create(users);
     }
 
     @Transactional
     public UserDetails loadUserById(UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow(
+        Users users = userRepository.findById(userId).orElseThrow(
             () -> new ResourceNotFoundException("User", "id", userId)
         );
 
-        return CustomUserPrincipal.create(user);
+        return CustomUserPrincipal.create(users);
     }
 }
