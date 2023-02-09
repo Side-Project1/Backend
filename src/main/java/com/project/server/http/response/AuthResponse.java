@@ -1,4 +1,4 @@
-package com.project.server.http;
+package com.project.server.http.response;
 
 public class AuthResponse {
     private String accessToken;

@@ -1,7 +1,9 @@
 package com.project.server.security;
 
 import com.project.server.config.AppProperties;
-import com.project.server.dto.DefaultResponse;
+import com.project.server.http.request.LoginRequest;
+import com.project.server.http.response.ApiResponse;
+import com.project.server.http.response.DefaultResponse;
 import com.project.server.entity.Users;
 import com.project.server.entity.UserToken;
 import com.project.server.exception.ResourceNotFoundException;
@@ -9,10 +11,14 @@ import com.project.server.repository.UserRepository;
 import com.project.server.repository.UserTokenRepository;
 import com.project.server.util.CustomCookie;
 import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -25,18 +31,13 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TokenProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
-    private AppProperties appProperties;
-    private UserRepository userRepository;
-    private UserTokenRepository userTokenRepository;
+    private final AppProperties appProperties;
+    private final UserRepository userRepository;
+    private final UserTokenRepository userTokenRepository;
 
-    public TokenProvider(AppProperties appProperties, UserRepository userRepository, UserTokenRepository userTokenRepository) {
-        this.appProperties = appProperties;
-        this.userRepository = userRepository;
-        this.userTokenRepository = userTokenRepository;
-    }
 
     @Transactional
     public Map<String, String> createToken(Authentication authentication) {
@@ -147,19 +148,18 @@ public class TokenProvider {
         }
     }
 
-    public DefaultResponse getTokenFromRefreshToken(UUID userId, HttpServletResponse rep) {
+    public ResponseEntity renewalRefreshToken(UUID userId, HttpServletResponse rep) {
         Users users = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         String refreshToken = users.getUserToken().getRefreshToken();
-
         try {
             Jwts.parser().setSigningKey(appProperties.getAuth().getTokenSecret()).parseClaimsJws(refreshToken);
             String accessToken = createAccessToken(userId);
             CustomCookie.addCookie(rep, "accessToken", accessToken, 60*30);
-            return new DefaultResponse("access 토근 재발급", HttpStatus.OK);
+            return new ResponseEntity(new ApiResponse("access 토근 재발급", HttpStatus.OK), HttpStatus.OK);
         } catch(ExpiredJwtException e) {    // refreshToken이 만료된 경우 재발급
-            return new DefaultResponse("refresh 토큰 만료, access 토큰 재발급 실패", HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity(new ApiResponse("refresh 토큰 만료, access 토큰 재발급 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch(Exception e) {
-            return new DefaultResponse("재발급 문제 발생", HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity(new ApiResponse("재발급 문제 발생", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 }

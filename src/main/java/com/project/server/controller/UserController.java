@@ -3,7 +3,7 @@ package com.project.server.controller;
 
 import com.project.server.entity.Users;
 import com.project.server.exception.ResourceNotFoundException;
-import com.project.server.http.LoginRequest;
+import com.project.server.http.request.LoginRequest;
 import com.project.server.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

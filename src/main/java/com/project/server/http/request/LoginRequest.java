@@ -1,4 +1,4 @@
-package com.project.server.http;
+package com.project.server.http.request;
 
 import lombok.Data;
 

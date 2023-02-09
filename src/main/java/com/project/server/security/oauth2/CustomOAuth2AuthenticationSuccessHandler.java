@@ -60,7 +60,7 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthentic
         Map<String, String> tokens = tokenProvider.createToken(authentication);
         response.setHeader("Authorization", tokens.get("accessToken"));
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", tokens.get("accessToken"))
+//                .queryParam("token", tokens.get("accessToken"))
                 .build().toUriString();
     }
 
