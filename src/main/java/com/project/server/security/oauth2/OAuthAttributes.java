@@ -37,8 +37,8 @@ public class OAuthAttributes {
         System.out.println(nameAttributeKey);
         if(registrationId.equalsIgnoreCase(AuthProvider.kakao.toString())) {
             return ofKakao(nameAttributeKey, attributes);
-        } else if (registrationId.equalsIgnoreCase(AuthProvider.github.toString())) {
-            return ofGithub(nameAttributeKey, attributes);
+        } else if (registrationId.equalsIgnoreCase(AuthProvider.naver.toString())) {
+            return ofNaver(nameAttributeKey, attributes);
         }
         else {
             throw new OAuth2AuthenticationProcessingException("Sorry! Login with " + registrationId + " is not supported yet.");
@@ -57,15 +57,28 @@ public class OAuthAttributes {
                 .build();
     }
 
-    private static OAuthAttributes ofGithub(String nameAttributeKey, Map<String, Object> attributes) {
-        String gitAccount = (String) attributes.get("login");
-        System.out.println(gitAccount);
+//    private static OAuthAttributes ofGithub(String nameAttributeKey, Map<String, Object> attributes) {
+//        String gitAccount = (String) attributes.get("login");
+//        System.out.println(gitAccount);
+////        Map<String, Object> kakaoProfile = (Map<String, Object>)kakaoAccount.get("profile");
+//
+//        return OAuthAttributes.builder()
+//                .name(gitAccount)
+//                .email(gitAccount)
+//                .nameAttributeKey(nameAttributeKey)
+//                .attributes(attributes)
+//                .build();
+//    }
+
+    private static OAuthAttributes ofNaver(String nameAttributeKey, Map<String, Object> attributes) {
+        Map<String, Object> naverAccount = (Map<String, Object>) attributes.get("response");
+//        System.out.println(gitAccount);
 //        Map<String, Object> kakaoProfile = (Map<String, Object>)kakaoAccount.get("profile");
 
         return OAuthAttributes.builder()
-                .name(gitAccount)
-                .email(gitAccount)
-                .nameAttributeKey(nameAttributeKey)
+                .name(naverAccount.get("name").toString())
+                .email(naverAccount.get("email").toString())
+                .nameAttributeKey(naverAccount.get("name").toString())
                 .attributes(attributes)
                 .build();
     }
