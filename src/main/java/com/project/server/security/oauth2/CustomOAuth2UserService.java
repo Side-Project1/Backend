@@ -2,7 +2,7 @@ package com.project.server.security.oauth2;
 
 
 import com.project.server.entity.Role;
-import com.project.server.entity.Users;
+import com.project.server.entity.User;
 import com.project.server.exception.OAuth2AuthenticationProcessingException;
 import com.project.server.repository.UserRepository;
 import com.project.server.security.AuthProvider;
@@ -46,25 +46,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if(attributes.getEmail() == null) {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
-        Optional<Users> userOptional = userRepository.findByEmail(attributes.getEmail());
-        Users users;
+        Optional<User> userOptional = userRepository.findByEmail(attributes.getEmail());
+        User user;
         if(userOptional.isPresent()) {
-            users = userOptional.get();
-            if(!users.getProvider().equals(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
+            user = userOptional.get();
+            if(!user.getProvider().equals(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
                 throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +
-                        users.getProvider() + " account. Please use your " + users.getProvider() +
+                        user.getProvider() + " account. Please use your " + user.getProvider() +
                         " account to login.");
             }
-            users = updateExistingUser(users, attributes);
+            user = updateExistingUser(user, attributes);
         } else {
-            users = registerNewUser(oAuth2UserRequest, attributes);
+            user = registerNewUser(oAuth2UserRequest, attributes);
         }
 
-        return CustomUserPrincipal.create(users, oAuth2User.getAttributes());
+        return CustomUserPrincipal.create(user, oAuth2User.getAttributes());
     }
 
-    private Users registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuthAttributes attributes) {
-        Users users = Users.builder()
+    private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuthAttributes attributes) {
+        User user = User.builder()
                 .provider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
                 .providerId(attributes.getNameAttributeKey())
                 .name(attributes.getName())
@@ -73,13 +73,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .role(Role.USER)
                 .build();
 
-        return userRepository.save(users);
+        return userRepository.save(user);
     }
 
-    private Users updateExistingUser(Users users, OAuthAttributes attributes) {
-        users.setName(attributes.getName());
-        users.setImageUrl(attributes.getProfile());
-        users.setUpdatedDate(LocalDateTime.now());
-        return userRepository.save(users);
+    private User updateExistingUser(User user, OAuthAttributes attributes) {
+        user.setName(attributes.getName());
+        user.setImageUrl(attributes.getProfile());
+        user.setUpdatedDate(LocalDateTime.now());
+        return userRepository.save(user);
     }
 }

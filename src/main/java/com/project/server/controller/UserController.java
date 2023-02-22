@@ -1,7 +1,7 @@
 package com.project.server.controller;
 
 
-import com.project.server.entity.Users;
+import com.project.server.entity.User;
 import com.project.server.exception.ResourceNotFoundException;
 import com.project.server.http.request.LoginRequest;
 import com.project.server.repository.UserRepository;
@@ -28,7 +28,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
     @GetMapping("/user/me")
-    public Users getCurrentUser(@RequestBody LoginRequest loginRequest) {
+    public User getCurrentUser(@RequestBody LoginRequest loginRequest) {
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());   //테스트 용
         return userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", loginRequest.getEmail()));

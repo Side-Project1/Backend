@@ -1,10 +1,8 @@
 package com.project.server.security;
 
 import com.project.server.config.AppProperties;
-import com.project.server.http.request.LoginRequest;
 import com.project.server.http.response.ApiResponse;
-import com.project.server.http.response.DefaultResponse;
-import com.project.server.entity.Users;
+import com.project.server.entity.User;
 import com.project.server.entity.UserToken;
 import com.project.server.exception.ResourceNotFoundException;
 import com.project.server.repository.UserRepository;
@@ -13,12 +11,8 @@ import com.project.server.util.CustomCookie;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -59,13 +53,13 @@ public class TokenProvider {
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
 
-        Users users = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
+        User user = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
         UserToken userToken = UserToken.builder()
                 .refreshToken(refreshToken)
                 .build();
         userTokenRepository.save(userToken);
-        users.setUserToken(userToken);
-        userRepository.save(users);
+        user.setUserToken(userToken);
+        userRepository.save(user);
 
         tokens.put("accessToken", accessToken);
         tokens.put("refreshToken", refreshToken);
@@ -113,8 +107,8 @@ public class TokenProvider {
     public boolean reGenerateRefreshToken(UUID userId) {
         log.info("refreshToken 재발급 요청");
 
-        Users users = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-        String refreshToken = users.getUserToken().getRefreshToken();
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        String refreshToken = user.getUserToken().getRefreshToken();
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
 
@@ -132,15 +126,15 @@ public class TokenProvider {
         } catch(ExpiredJwtException e) {    // refreshToken이 만료된 경우 재발급
             UserToken userToken = UserToken.builder()
                     .refreshToken(Jwts.builder()
-                                .setSubject(String.valueOf(users.getId()))
+                                .setSubject(String.valueOf(user.getId()))
                                 .setExpiration(expiryDate) // 시간 변경 예정
                                 .setIssuedAt(new Date(System.currentTimeMillis()))
                                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                                 .compact())
                     .build();
-            users.setUserToken(userToken);
+            user.setUserToken(userToken);
 
-            log.info("refreshToken 재발급 완료 : {}", "Bearer " + users.getUserToken().getRefreshToken());
+            log.info("refreshToken 재발급 완료 : {}", "Bearer " + user.getUserToken().getRefreshToken());
             return true;
         } catch(Exception e) {
             log.error("refreshToken 재발급 중 문제 발생 : {}", e.getMessage());
@@ -149,8 +143,8 @@ public class TokenProvider {
     }
 
     public ResponseEntity renewalRefreshToken(UUID userId, HttpServletResponse rep) {
-        Users users = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-        String refreshToken = users.getUserToken().getRefreshToken();
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        String refreshToken = user.getUserToken().getRefreshToken();
         try {
             Jwts.parser().setSigningKey(appProperties.getAuth().getTokenSecret()).parseClaimsJws(refreshToken);
             String accessToken = createAccessToken(userId);
