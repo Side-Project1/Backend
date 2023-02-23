@@ -1,10 +1,16 @@
 package com.project.server.http.request;
 
-import lombok.Data;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.Getter;
 
-@Data
+@Getter
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SignUpRequest {
-    private String email;
+    private String userId;
     private String password;
-    private String name;
+    private String userName;
+    private String phone;
+    private String email;
+    private String birthday;
 }

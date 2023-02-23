@@ -32,7 +32,6 @@ public class TokenProvider {
     private final UserRepository userRepository;
     private final UserTokenRepository userTokenRepository;
 
-
     @Transactional
     public Map<String, String> createToken(Authentication authentication) {
         CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
@@ -67,11 +66,11 @@ public class TokenProvider {
         return tokens;
     }
 
-    public String createAccessToken(UUID userId) {
+    public String createAccessToken(UUID uuid) {
         Date now = new Date();
 
         return Jwts.builder()
-                .setSubject(String.valueOf(userId))
+                .setSubject(String.valueOf(uuid))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec()))      // 30분
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
@@ -104,10 +103,10 @@ public class TokenProvider {
         return false;
     }
 
-    public boolean reGenerateRefreshToken(UUID userId) {
+    public boolean reGenerateRefreshToken(UUID uuid) {
         log.info("refreshToken 재발급 요청");
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        User user = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User", "id", uuid));
         String refreshToken = user.getUserToken().getRefreshToken();
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
@@ -142,12 +141,12 @@ public class TokenProvider {
         }
     }
 
-    public ResponseEntity renewalRefreshToken(UUID userId, HttpServletResponse rep) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+    public ResponseEntity renewalRefreshToken(UUID uuid, HttpServletResponse rep) {
+        User user = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User", "id", uuid));
         String refreshToken = user.getUserToken().getRefreshToken();
         try {
             Jwts.parser().setSigningKey(appProperties.getAuth().getTokenSecret()).parseClaimsJws(refreshToken);
-            String accessToken = createAccessToken(userId);
+            String accessToken = createAccessToken(uuid);
             CustomCookie.addCookie(rep, "accessToken", accessToken, 60*30);
             return new ResponseEntity(new ApiResponse("access 토근 재발급", HttpStatus.OK), HttpStatus.OK);
         } catch(ExpiredJwtException e) {    // refreshToken이 만료된 경우 재발급

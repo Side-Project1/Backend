@@ -1,4 +1,7 @@
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   config:
     activate:
       on-profile: local
@@ -14,3 +17,51 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: {client-id}
+            client-secret: {client-scret}
+            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email
+            client-name: kakao
+
+        provider:
+          kakao:
+            authorization_uri: https://kauth.kakao.com/oauth/authorize
+            token_uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user_name_attribute: id
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: {username}
+    password: {password}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
+
+app:
+  auth:
+    tokenSecret: {tokenSecret}
+    tokenExpirationMsec: {tokenExpirationMsec}
+  cors:
+    allowedOrigins: {allowedOrigins}
+  oauth2:
+    # After successfully authenticating with the OAuth2 Provider,
+    # we'll be generating an auth token for the user and sending the token to the
+    # redirectUri mentioned by the client in the /oauth2/authorize request.
+    # We're not using cookies because they won't work well in mobile clients.
+    authorizedRedirectUris: {authorizeRedirectUris}
+
+

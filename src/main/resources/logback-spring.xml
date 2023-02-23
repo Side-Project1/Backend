@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+
+    <!-- 로그파일 저장 경로 -->
+    <property name="LOG_DIR" value="./logs" />
+
+    <!-- CONSOLE -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                [%-90(%d{yyyy-MM-dd HH:mm:ss.SSS}] %clr([%-5level]) [%-7thread] [%-30logger{5}]) %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+    <!-- // CONSOLE -->
+    <!-- FILE LOG -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/server.log</file>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                [%-90(%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%-7thread] [%-30logger{5}]) %msg%n
+            </Pattern>
+        </layout>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/server.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 7일까지 보관 -->
+            <maxHistory>7</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+    <logger name="com.project.server" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="com.project.server" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE" />
+    </logger>
+
+</configuration>

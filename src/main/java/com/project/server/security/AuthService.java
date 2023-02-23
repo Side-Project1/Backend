@@ -37,9 +37,12 @@ public class AuthService {
 
         try {
             User user = User.builder()
-                    .name(signUpRequest.getName())
-                    .email(signUpRequest.getEmail())
+                    .userId(signUpRequest.getUserId())
                     .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                    .userName(signUpRequest.getUserName())
+                    .phone(signUpRequest.getPhone())
+                    .email(signUpRequest.getEmail())
+                    .birthday(signUpRequest.getBirthday())
                     .provider(AuthProvider.local)
                     .role(Role.USER)
                     .build();
@@ -54,7 +57,7 @@ public class AuthService {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
+                            loginRequest.getUserId(),
                             loginRequest.getPassword()
                     )
             );

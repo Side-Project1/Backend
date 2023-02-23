@@ -17,14 +17,20 @@ import java.util.UUID;
 public class User extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id", columnDefinition = "BINARY(16)")
+    @Column(name = "user_sn", columnDefinition = "BINARY(16)")
     private UUID id;
-    @Column(unique = true)
-    private String email;
-    @Column(unique = true, nullable = false)
-    private String name;
+    @Column
+    private String userId;
     @Column
     private String password;
+    @Column(nullable = false)
+    private String userName;
+    @Column
+    private String phone;
+    @Column
+    private String email;
+    @Column
+    private String birthday;
     @Column
     private String imageUrl;
     @Column(nullable = false)
@@ -35,9 +41,7 @@ public class User extends BaseTime {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
-//    @Column
-//    private String refreshToken;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "token_id")
     private UserToken userToken;
 }
