@@ -2,7 +2,7 @@ package com.project.server.controller;
 
 import com.project.server.http.request.EmailRequest;
 import com.project.server.http.request.FindPwRequest;
-import com.project.server.http.response.ApiResponse;
+import com.project.server.http.response.ApiRes;
 import com.project.server.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +16,14 @@ public class EmailController {
 
     @PostMapping("/send")
     public ResponseEntity sendMail(@RequestBody EmailRequest emailRequest) {
-        ApiResponse apiResponse = mailService.send(emailRequest);
-        return new ResponseEntity(apiResponse, apiResponse.getStatus());
+        ApiRes apiRes = mailService.send(emailRequest);
+        return new ResponseEntity(apiRes, apiRes.getStatus());
     }
 
     @GetMapping("/confirm")
     public ResponseEntity confirm(@RequestParam("token") String token) {
-        ApiResponse apiResponse = mailService.confirm(token);
-        return new ResponseEntity(apiResponse, apiResponse.getStatus());
+        ApiRes apiRes = mailService.confirm(token);
+        return new ResponseEntity(apiRes, apiRes.getStatus());
     }
 
     @PostMapping("/findId")

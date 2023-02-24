@@ -4,15 +4,12 @@ import com.project.server.entity.Role;
 import com.project.server.entity.User;
 import com.project.server.http.request.LoginRequest;
 import com.project.server.http.request.SignUpRequest;
-import com.project.server.http.response.ApiResponse;
+import com.project.server.http.response.ApiRes;
 import com.project.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +29,7 @@ public class AuthService {
 
     public ResponseEntity signUp(SignUpRequest signUpRequest) {
         if(userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return new ResponseEntity(new ApiResponse("해당 이메일을 사용하고 있습니다.", HttpStatus.CONFLICT), HttpStatus.CONFLICT);
+            return new ResponseEntity(new ApiRes("해당 이메일을 사용하고 있습니다.", HttpStatus.CONFLICT), HttpStatus.CONFLICT);
         }
 
         try {
@@ -48,9 +45,9 @@ public class AuthService {
                     .gender(signUpRequest.getGender())
                     .build();
             userRepository.save(user);
-            return new ResponseEntity(new ApiResponse("회원가입 성공", HttpStatus.CREATED), HttpStatus.CREATED);
+            return new ResponseEntity(new ApiRes("회원가입 성공", HttpStatus.CREATED), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity(new ApiResponse(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ApiRes(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -61,7 +58,7 @@ public class AuthService {
                 if(passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())){
                     Map<String, String> tokens = tokenProvider.createTokenForLocal(loginRequest);
                     response.setHeader("Authorization", tokens.get("accessToken"));
-                    return new ResponseEntity(new ApiResponse("로그인 성공", HttpStatus.OK), HttpStatus.OK);
+                    return new ResponseEntity(new ApiRes("로그인 성공", HttpStatus.OK), HttpStatus.OK);
                 }else {
                     throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
                 }
@@ -69,9 +66,9 @@ public class AuthService {
                 throw new IllegalArgumentException("아이디를 찾을 수 없습니다.");
             }
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity(new ApiResponse(e.getMessage(), HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new ApiRes(e.getMessage(), HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity(new ApiResponse(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ApiRes(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
     }
 

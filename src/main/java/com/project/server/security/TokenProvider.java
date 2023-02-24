@@ -2,7 +2,7 @@ package com.project.server.security;
 
 import com.project.server.config.AppProperties;
 import com.project.server.http.request.LoginRequest;
-import com.project.server.http.response.ApiResponse;
+import com.project.server.http.response.ApiRes;
 import com.project.server.entity.User;
 import com.project.server.entity.UserToken;
 import com.project.server.exception.ResourceNotFoundException;
@@ -182,11 +182,11 @@ public class TokenProvider {
             Jwts.parser().setSigningKey(appProperties.getAuth().getTokenSecret()).parseClaimsJws(refreshToken);
             String accessToken = createAccessToken(uuid);
             CustomCookie.addCookie(rep, "accessToken", accessToken, 60*30);
-            return new ResponseEntity(new ApiResponse("access 토근 재발급", HttpStatus.OK), HttpStatus.OK);
+            return new ResponseEntity(new ApiRes("access 토근 재발급", HttpStatus.OK), HttpStatus.OK);
         } catch(ExpiredJwtException e) {    // refreshToken이 만료된 경우 재발급
-            return new ResponseEntity(new ApiResponse("refresh 토큰 만료, access 토큰 재발급 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ApiRes("refresh 토큰 만료, access 토큰 재발급 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch(Exception e) {
-            return new ResponseEntity(new ApiResponse("재발급 문제 발생", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ApiRes("재발급 문제 발생", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 }

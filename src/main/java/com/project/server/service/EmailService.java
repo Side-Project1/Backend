@@ -3,7 +3,7 @@ package com.project.server.service;
 import com.project.server.entity.ConfirmMail;
 import com.project.server.http.request.EmailRequest;
 import com.project.server.http.request.FindPwRequest;
-import com.project.server.http.response.ApiResponse;
+import com.project.server.http.response.ApiRes;
 import com.project.server.repository.ConfirmMailRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class EmailService {
     private final ConfirmMailRepository confirmMailRepository;
     private final JavaMailSender javaMailSender;
 
-    public ApiResponse send(EmailRequest emailMessage) {
+    public ApiRes send(EmailRequest emailMessage) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         try {
@@ -50,21 +50,21 @@ public class EmailService {
 
             javaMailSender.send(mimeMessage);
 //            log.info("sent email: {}", emailMessage.getMessage());
-            return new ApiResponse("전송 완료", HttpStatus.OK);
+            return new ApiRes("전송 완료", HttpStatus.OK);
         } catch (MessagingException e) {
             log.error("[EmailService.send()] error {}", e.getMessage());
-            return new ApiResponse("전송 실패", HttpStatus.BAD_REQUEST);
+            return new ApiRes("전송 실패", HttpStatus.BAD_REQUEST);
         }
     }
 
 
-    public ApiResponse confirm(String token) {
+    public ApiRes confirm(String token) {
         try{
             confirmMailRepository.findByIdAndExpirationDateAfterAndExpired(UUID.fromString(token), LocalDateTime.now(), false).orElseThrow(() -> new Exception());
-            return new ApiResponse("인증 완료", HttpStatus.OK);
+            return new ApiRes("인증 완료", HttpStatus.OK);
         } catch (Exception e) {
             log.error("[EmailService.send()] error {}", e.getMessage());
-            return new ApiResponse("인증 실패", HttpStatus.BAD_REQUEST);
+            return new ApiRes("인증 실패", HttpStatus.BAD_REQUEST);
         }
     }
 
