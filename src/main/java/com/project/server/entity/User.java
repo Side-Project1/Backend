@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Users extends BaseTime {
+public class User extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id", columnDefinition = "BINARY(16)")
@@ -40,4 +40,12 @@ public class Users extends BaseTime {
     @OneToOne
     @JoinColumn(name = "token_id")
     private UserToken userToken;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "resume_id")
+    private Resume resume;
+
+
+
+
 }

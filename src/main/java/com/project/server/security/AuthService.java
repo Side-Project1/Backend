@@ -1,8 +1,7 @@
 package com.project.server.security;
 
 import com.project.server.entity.Role;
-import com.project.server.entity.Users;
-import com.project.server.exception.BadRequestException;
+import com.project.server.entity.User;
 import com.project.server.http.request.LoginRequest;
 import com.project.server.http.request.SignUpRequest;
 import com.project.server.http.response.ApiResponse;
@@ -37,14 +36,14 @@ public class AuthService {
         }
 
         try {
-            Users users = Users.builder()
+            User user = User.builder()
                     .name(signUpRequest.getName())
                     .email(signUpRequest.getEmail())
                     .password(passwordEncoder.encode(signUpRequest.getPassword()))
                     .provider(AuthProvider.local)
                     .role(Role.USER)
                     .build();
-            userRepository.save(users);
+            userRepository.save(user);
             return new ResponseEntity(new ApiResponse("회원가입 성공", HttpStatus.CREATED), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity(new ApiResponse(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);

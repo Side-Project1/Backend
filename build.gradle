@@ -37,6 +37,10 @@ dependencies {
 
 	// swagger ui
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+
+	//aws s3 img upload
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {
