@@ -14,10 +14,10 @@ services:
       - ./data/:/var/lib/mysql # -v 옵션 (다렉토리 마운트 설정)
 #      - ./db/initdb.d:/docker-entrypoint-initdb.d
     environment:
-      - MYSQL_ROOT_PASSWORD={MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE={MYSQL_DATABASE}
-      - MYSQL_USER={MYSQL_USER}
-      - MYSQL_PASSWORD={MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=rootp
+      - MYSQL_DATABASE=server
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=userpassword
       - TZ=Asia/Seoul
     command: # 명령어 실행
       - --character-set-server=utf8mb4

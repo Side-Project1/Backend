@@ -10,18 +10,18 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 public class ApiResponse<T> {
     private String message;
-    private int status;
+    private HttpStatus status;
     private T data;
 
     public ApiResponse(String message, HttpStatus status) {
         this.message = message;
-        this.status = status.value();
+        this.status = status;
         this.data = null;
     }
 
     public ApiResponse(String message, HttpStatus status, T data) {
         this.message = message;
-        this.status = status.value();
+        this.status = status;
         this.data = data;
     }
 }

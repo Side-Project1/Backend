@@ -16,6 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -27,7 +29,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-    private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
+    private List<String> whiteList = Arrays.asList("swagger", "oauth2", "auth", "favicon", "email");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -44,10 +46,19 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 tokenProvider.reGenerateRefreshToken(userId);
+            } else {
+                boolean check = false;
+                for (String s : whiteList) {
+                    if (request.getRequestURI().contains(s)){
+                        check = true;
+                        break;
+                    }
+                }
+                if(!check) log.error("유효한 JWT 토큰이 없습니다!!, uri: {}", request.getRequestURI());
             }
 
         } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
+            log.error("Could not set user authentication in security context", ex);
         }
 
         filterChain.doFilter(request, response);

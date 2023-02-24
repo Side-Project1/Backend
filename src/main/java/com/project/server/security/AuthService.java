@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -25,7 +26,6 @@ import java.util.UUID;
 @Service
 public class AuthService {
 
-    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
@@ -37,11 +37,15 @@ public class AuthService {
 
         try {
             User user = User.builder()
-                    .name(signUpRequest.getName())
-                    .email(signUpRequest.getEmail())
+                    .userId(signUpRequest.getUserId())
                     .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                    .userName(signUpRequest.getUserName())
+                    .phone(signUpRequest.getPhone())
+                    .email(signUpRequest.getEmail())
+                    .birthday(signUpRequest.getBirthday())
                     .provider(AuthProvider.local)
                     .role(Role.USER)
+                    .gender(signUpRequest.getGender())
                     .build();
             userRepository.save(user);
             return new ResponseEntity(new ApiResponse("회원가입 성공", HttpStatus.CREATED), HttpStatus.CREATED);
@@ -52,15 +56,20 @@ public class AuthService {
 
     public ResponseEntity login(LoginRequest loginRequest, HttpServletResponse response) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
-                            loginRequest.getPassword()
-                    )
-            );
-            Map<String, String> tokens = tokenProvider.createToken(authentication);
-            response.setHeader("Authorization", tokens.get("accessToken"));
-            return new ResponseEntity(new ApiResponse("로그인 성공", HttpStatus.OK), HttpStatus.OK);
+            Optional<User> user = userRepository.findByUserId(loginRequest.getUserId());
+            if (user.isPresent()) {
+                if(passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())){
+                    Map<String, String> tokens = tokenProvider.createTokenForLocal(loginRequest);
+                    response.setHeader("Authorization", tokens.get("accessToken"));
+                    return new ResponseEntity(new ApiResponse("로그인 성공", HttpStatus.OK), HttpStatus.OK);
+                }else {
+                    throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+                }
+            }else {
+                throw new IllegalArgumentException("아이디를 찾을 수 없습니다.");
+            }
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity(new ApiResponse(e.getMessage(), HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity(new ApiResponse(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
