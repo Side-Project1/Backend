@@ -1,13 +1,17 @@
 package com.project.server.service;
 
 import com.project.server.entity.ConfirmMail;
+import com.project.server.entity.User;
+import com.project.server.exception.ResourceNotFoundException;
 import com.project.server.http.request.EmailRequest;
 import com.project.server.http.request.FindPwRequest;
 import com.project.server.http.response.ApiRes;
 import com.project.server.repository.ConfirmMailRepository;
+import com.project.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -23,6 +27,7 @@ import java.util.UUID;
 public class EmailService {
     private final ConfirmMailRepository confirmMailRepository;
     private final JavaMailSender javaMailSender;
+    private final UserRepository userRepository;
 
     public ApiRes send(EmailRequest emailMessage) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -63,15 +68,54 @@ public class EmailService {
             confirmMailRepository.findByIdAndExpirationDateAfterAndExpired(UUID.fromString(token), LocalDateTime.now(), false).orElseThrow(() -> new Exception());
             return new ApiRes("인증 완료", HttpStatus.OK);
         } catch (Exception e) {
-            log.error("[EmailService.send()] error {}", e.getMessage());
+            log.error("error {}", e.getMessage());
             return new ApiRes("인증 실패", HttpStatus.BAD_REQUEST);
         }
     }
 
-    public void findId(EmailRequest emailRequest){
+    public ResponseEntity findId(EmailRequest emailRequest){
+        try{
+            if(!userRepository.existsByEmail(emailRequest.getReceiver())) {
+                return new ResponseEntity(new ApiRes("해당 이메일이 존재하지 않습니다.", HttpStatus.CONFLICT), HttpStatus.CONFLICT);
+            }
 
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+            mimeMessageHelper.setTo(emailRequest.getReceiver());
+            mimeMessageHelper.setSubject("아이디 찾기");
+            mimeMessageHelper.setText(userRepository.findByEmail(emailRequest.getReceiver()).get().getUserId(), true);
+            javaMailSender.send(mimeMessage);
+
+            return new ResponseEntity(new ApiRes("아이디 찾기 메일 전송 성공", HttpStatus.OK), HttpStatus.OK);
+        } catch (MessagingException e) {
+            log.error("[EmailService.send()] error {}", e.getMessage());
+            return new ResponseEntity(new ApiRes("아이디 찾기 메일 전송 실패", HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("error {}", e.getMessage());
+            return new ResponseEntity(new ApiRes(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    public void findPassword(FindPwRequest findPwRequest) {
-    }
+//    public ResponseEntity findPassword(EmailRequest emailRequest) {
+//        try{
+//            if(!userRepository.existsByEmail(emailRequest.getReceiver())) {
+//                return new ResponseEntity(new ApiRes("해당 이메일이 존재하지 않습니다.", HttpStatus.CONFLICT), HttpStatus.CONFLICT);
+//            }
+//
+//            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+//            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+//            mimeMessageHelper.setTo(emailRequest.getReceiver());
+//            mimeMessageHelper.setSubject("비밀번호 찾기");
+//            mimeMessageHelper.setText(userRepository.findByEmail(emailRequest.getReceiver()).get().getUserId(), true);
+//            javaMailSender.send(mimeMessage);
+//
+//            return new ResponseEntity(new ApiRes("아이디 찾기 메일 전송 성공", HttpStatus.OK), HttpStatus.OK);
+//        } catch (MessagingException e) {
+//            log.error("[EmailService.send()] error {}", e.getMessage());
+//            return new ResponseEntity(new ApiRes("아이디 찾기 메일 전송 실패", HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+//        } catch (Exception e) {
+//            log.error("error {}", e.getMessage());
+//            return new ResponseEntity(new ApiRes(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+//        }
+//    }
 }

@@ -8,9 +8,13 @@ import com.project.server.security.TokenProvider;
 import com.project.server.util.CustomCookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
@@ -58,10 +62,7 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthentic
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
         Map<String, String> tokens = tokenProvider.createToken(authentication);
-        response.setHeader("Authorization", tokens.get("accessToken"));
-        return UriComponentsBuilder.fromUriString(targetUrl)
-//                .queryParam("token", tokens.get("accessToken"))
-                .build().toUriString();
+        return UriComponentsBuilder.fromUriString(targetUrl).queryParam("Authorization", tokens.get("accessToken")).build().toUriString();
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {

@@ -27,12 +27,12 @@ public class EmailController {
     }
 
     @PostMapping("/findId")
-    public void findId(@RequestBody EmailRequest emailRequest){
-        mailService.findId(emailRequest);
+    public ResponseEntity findId(@RequestBody EmailRequest emailRequest){
+        return mailService.findId(emailRequest);
     }
 
-    @PostMapping("/findPassword")
-    public void findById(@RequestBody FindPwRequest findPwRequest){
-        mailService.findPassword(findPwRequest);
-    }
+//    @PostMapping("/findPassword")
+//    public ResponseEntity findById(@RequestBody EmailRequest emailRequest){
+//        return mailService.findPassword(findPwRequest);
+//    }
 }

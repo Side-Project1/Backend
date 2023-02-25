@@ -17,12 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class AuthService {
-
+    private final String pattern = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z[0-9]$@$!%*#?&]{8,20}$"; // 영문, 숫자, 특수문자 , 8~20자리
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
@@ -30,6 +31,9 @@ public class AuthService {
     public ResponseEntity signUp(SignUpRequest signUpRequest) {
         if(userRepository.existsByEmail(signUpRequest.getEmail())) {
             return new ResponseEntity(new ApiRes("해당 이메일을 사용하고 있습니다.", HttpStatus.CONFLICT), HttpStatus.CONFLICT);
+        }
+        if(!Pattern.compile(pattern).matcher(signUpRequest.getPassword()).find()) {
+            return new ResponseEntity(new ApiRes("비밀번호는 영어, 숫자, 특수문자를 사용하고 8~20자리이어야 합니다.", HttpStatus.CONFLICT), HttpStatus.CONFLICT);
         }
 
         try {
