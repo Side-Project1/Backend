@@ -6,6 +6,7 @@ import com.project.server.http.response.ApiResponse;
 import com.project.server.entity.User;
 import com.project.server.entity.UserToken;
 import com.project.server.exception.ResourceNotFoundException;
+import com.project.server.http.response.ApiResponse;
 import com.project.server.repository.UserRepository;
 import com.project.server.repository.UserTokenRepository;
 import com.project.server.util.CustomCookie;
@@ -68,13 +69,13 @@ public class TokenProvider {
     }
 
     @Transactional
-    public Map<String, String> createTokenForLocal(LoginRequest loginRequest) {
+    public Map<String, String> createTokenForLocal(UUID uuid) {
 
         Date now = new Date();
         Map<String, String> tokens = new HashMap<>();
 
         String accessToken = Jwts.builder()
-                .setSubject(String.valueOf(loginRequest.getUserId()))
+                .setSubject(String.valueOf(uuid))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec()))      // 30분
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
@@ -86,7 +87,7 @@ public class TokenProvider {
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
 
-        User user = userRepository.findByUserId(loginRequest.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User", "id", loginRequest.getUserId()));
+        User user = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User", "id", uuid));
         UserToken userToken = UserToken.builder()
                 .refreshToken(refreshToken)
                 .build();
@@ -159,11 +160,11 @@ public class TokenProvider {
         } catch(ExpiredJwtException e) {    // refreshToken이 만료된 경우 재발급
             UserToken userToken = UserToken.builder()
                     .refreshToken(Jwts.builder()
-                                .setSubject(String.valueOf(user.getId()))
-                                .setExpiration(expiryDate) // 시간 변경 예정
-                                .setIssuedAt(new Date(System.currentTimeMillis()))
-                                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
-                                .compact())
+                            .setSubject(String.valueOf(user.getId()))
+                            .setExpiration(expiryDate) // 시간 변경 예정
+                            .setIssuedAt(new Date(System.currentTimeMillis()))
+                            .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
+                            .compact())
                     .build();
             user.setUserToken(userToken);
 

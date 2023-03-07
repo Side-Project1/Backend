@@ -10,9 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +56,7 @@ public class AuthService {
             Optional<User> user = userRepository.findByUserId(loginRequest.getUserId());
             if (user.isPresent()) {
                 if(passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())){
-                    Map<String, String> tokens = tokenProvider.createTokenForLocal(loginRequest);
+                    Map<String, String> tokens = tokenProvider.createTokenForLocal(user.get().getId());
                     response.setHeader("Authorization", tokens.get("accessToken"));
                     return new ResponseEntity(new ApiResponse("로그인 성공", HttpStatus.OK), HttpStatus.OK);
                 }else {

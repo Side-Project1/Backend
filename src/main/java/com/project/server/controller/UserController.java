@@ -32,10 +32,10 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
     @GetMapping("/me")
-    public User getCurrentUser(@RequestBody LoginRequest loginRequest) {
+    public void getCurrentUser() {
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());   //테스트 용
-        return userRepository.findByUserId(loginRequest.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", loginRequest.getUserId()));
+//        return userRepository.findByUserId(loginRequest.getUserId())
+//                .orElseThrow(() -> new ResourceNotFoundException("User", "id", loginRequest.getUserId()));
     }
 
 }
