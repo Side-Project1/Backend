@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,6 +21,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,7 +42,10 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/images/**", "/js/**", "/webjars/**");
+        //Spring Seucrity 로직을 수행하지 않고 아래 요청에 접근
+        return (web) -> web.ignoring().
+                antMatchers("/images/**", "/js/**", "/webjars/**", "/swagger-ui/**",
+                        "/swagger-resources/**", "/v3/api-docs", "/favicon/**");
     }
 
     @Bean
@@ -61,7 +68,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors().and()
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션을 사용 안함
                     .and()
                 .csrf().disable()   // csrf 보안 토큰 해제
@@ -72,12 +80,12 @@ public class SecurityConfig {
                     .accessDeniedHandler(customAccessDeniedHandler)
                     .and()
                 .authorizeHttpRequests()    // 요청에 대한 사용권한 체크
-                    .antMatchers( "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs", "/favicon*").permitAll()
-                    .antMatchers("/login/**").permitAll()
-                    .antMatchers("/auth/**").permitAll()
-                    .antMatchers("/oauth2/**").permitAll()
-                    .antMatchers("/api/v1/email/**").permitAll()
-                    .anyRequest().authenticated()
+//                    .antMatchers( "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs", "/favicon*").permitAll()
+//                    .antMatchers("/login/**").permitAll()
+//                    .antMatchers("/auth/**").permitAll()
+//                    .antMatchers("/oauth2/**").permitAll()
+//                    .antMatchers("/api/v1/email/**").permitAll()
+                    .anyRequest().permitAll()
                     .and()
                 .oauth2Login()
                     .authorizationEndpoint()
@@ -95,5 +103,20 @@ public class SecurityConfig {
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(false);
+        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Headers", "Authorization, x-xsrf-token, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, " +
+                "Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers", "Content-Disposition"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

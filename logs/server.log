@@ -1,37 +1,140 @@
-[2023-02-24 19:04:31.220] [INFO ] [main   ] [c.p.s.ServerApplication       ]                Starting ServerApplication using Java 17.0.5 on LAPTOP-18UINSAQ with PID 7688 (C:\project\tt\Backend\out\production\classes started by 김선웅 in C:\project\tt\Backend)
-[2023-02-24 19:04:31.220] [DEBUG] [main   ] [c.p.s.ServerApplication       ]                Running with Spring Boot v2.7.7, Spring v5.3.24
-[2023-02-24 19:04:31.220] [INFO ] [main   ] [c.p.s.ServerApplication       ]                The following 1 profile is active: "local"
-[2023-02-24 19:04:32.230] [INFO ] [main   ] [o.s.d.r.c.RepositoryConfigurationDelegate]     Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-[2023-02-24 19:04:32.310] [INFO ] [main   ] [o.s.d.r.c.RepositoryConfigurationDelegate]     Finished Spring Data repository scanning in 67 ms. Found 4 JPA repository interfaces.
-[2023-02-24 19:04:32.925] [INFO ] [main   ] [o.s.b.w.e.t.TomcatWebServer   ]                Tomcat initialized with port(s): 8080 (http)
-[2023-02-24 19:04:32.940] [INFO ] [main   ] [o.a.c.h.Http11NioProtocol     ]                Initializing ProtocolHandler ["http-nio-8080"]
-[2023-02-24 19:04:32.940] [INFO ] [main   ] [o.a.c.c.StandardService       ]                Starting service [Tomcat]
-[2023-02-24 19:04:32.940] [INFO ] [main   ] [o.a.c.c.StandardEngine        ]                Starting Servlet engine: [Apache Tomcat/9.0.70]
-[2023-02-24 19:04:33.105] [INFO ] [main   ] [o.a.c.c.C.[.[.[/]             ]                Initializing Spring embedded WebApplicationContext
-[2023-02-24 19:04:33.105] [INFO ] [main   ] [o.s.b.w.s.c.ServletWebServerApplicationContext] Root WebApplicationContext: initialization completed in 1835 ms
-[2023-02-24 19:04:33.562] [INFO ] [main   ] [o.h.j.i.u.LogHelper           ]                HHH000204: Processing PersistenceUnitInfo [name: default]
-[2023-02-24 19:04:33.667] [INFO ] [main   ] [o.h.Version                   ]                HHH000412: Hibernate ORM core version 5.6.14.Final
-[2023-02-24 19:04:33.869] [INFO ] [main   ] [o.h.a.c.Version               ]                HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-[2023-02-24 19:04:33.958] [INFO ] [main   ] [c.z.h.HikariDataSource        ]                HikariPool-1 - Starting...
-[2023-02-24 19:04:34.578] [INFO ] [main   ] [c.z.h.HikariDataSource        ]                HikariPool-1 - Start completed.
-[2023-02-24 19:04:34.589] [INFO ] [main   ] [o.h.d.Dialect                 ]                HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
-[2023-02-24 19:04:36.374] [INFO ] [main   ] [o.h.e.t.j.p.i.JtaPlatformInitiator]            HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-[2023-02-24 19:04:36.383] [INFO ] [main   ] [o.s.o.j.LocalContainerEntityManagerFactoryBean] Initialized JPA EntityManagerFactory for persistence unit 'default'
-[2023-02-24 19:04:36.782] [DEBUG] [main   ] [c.p.s.s.TokenAuthenticationFilter]             Filter 'tokenAuthenticationFilter' configured for use
-[2023-02-24 19:04:37.019] [WARN ] [main   ] [o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-[2023-02-24 19:04:37.837] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4ffcb1bd, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5be8a92c, org.springframework.security.web.context.SecurityContextPersistenceFilter@193d73d3, org.springframework.security.web.header.HeaderWriterFilter@464017f5, org.springframework.web.filter.CorsFilter@51d80f6e, org.springframework.security.web.authentication.logout.LogoutFilter@6821d4e1, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@c7aac7c, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@7ab8f93, com.project.server.security.TokenAuthenticationFilter@30a5a58d, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@978475b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@10b0dd3a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7fae6f43, org.springframework.security.web.session.SessionManagementFilter@397f9672, org.springframework.security.web.access.ExceptionTranslationFilter@44b82007, org.springframework.security.web.access.intercept.AuthorizationFilter@1174ff02]
-[2023-02-24 19:04:37.837] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/images/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
-[2023-02-24 19:04:37.837] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/images/**']
-[2023-02-24 19:04:37.837] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/js/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
-[2023-02-24 19:04:37.837] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/js/**']
-[2023-02-24 19:04:37.837] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/webjars/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
-[2023-02-24 19:04:37.837] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/webjars/**']
-[2023-02-24 19:04:38.037] [INFO ] [main   ] [o.a.c.h.Http11NioProtocol     ]                Starting ProtocolHandler ["http-nio-8080"]
-[2023-02-24 19:04:38.061] [INFO ] [main   ] [o.s.b.w.e.t.TomcatWebServer   ]                Tomcat started on port(s): 8080 (http) with context path ''
-[2023-02-24 19:04:38.269] [INFO ] [main   ] [c.p.s.ServerApplication       ]                Started ServerApplication in 7.579 seconds (JVM running for 8.38)
-[2023-02-24 19:04:44.745] [INFO ] [http-nio-8080-exec-1] [o.a.c.c.C.[.[.[/]             ]   Initializing Spring DispatcherServlet 'dispatcherServlet'
-[2023-02-24 19:04:44.745] [INFO ] [http-nio-8080-exec-1] [o.s.w.s.DispatcherServlet     ]   Initializing Servlet 'dispatcherServlet'
-[2023-02-24 19:04:44.753] [INFO ] [http-nio-8080-exec-1] [o.s.w.s.DispatcherServlet     ]   Completed initialization in 8 ms
-[2023-02-24 19:05:09.665] [INFO ] [SpringApplicationShutdownHook] [o.s.o.j.LocalContainerEntityManagerFactoryBean] Closing JPA EntityManagerFactory for persistence unit 'default'
-[2023-02-24 19:05:09.665] [INFO ] [SpringApplicationShutdownHook] [c.z.h.HikariDataSource        ] HikariPool-1 - Shutdown initiated...
-[2023-02-24 19:05:09.707] [INFO ] [SpringApplicationShutdownHook] [c.z.h.HikariDataSource        ] HikariPool-1 - Shutdown completed.
+[2023-03-04 16:15:56.635] [INFO ] [main   ] [c.p.s.ServerApplication       ]                Starting ServerApplication using Java 17.0.5 on DESKTOP-50G758Q with PID 5492 (C:\project\Backend\out\production\classes started by tkfdk in C:\project\Backend)
+[2023-03-04 16:15:56.644] [DEBUG] [main   ] [c.p.s.ServerApplication       ]                Running with Spring Boot v2.7.7, Spring v5.3.24
+[2023-03-04 16:15:56.645] [INFO ] [main   ] [c.p.s.ServerApplication       ]                The following 1 profile is active: "local"
+[2023-03-04 16:15:58.287] [INFO ] [main   ] [o.s.d.r.c.RepositoryConfigurationDelegate]     Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[2023-03-04 16:15:58.487] [INFO ] [main   ] [o.s.d.r.c.RepositoryConfigurationDelegate]     Finished Spring Data repository scanning in 142 ms. Found 5 JPA repository interfaces.
+[2023-03-04 16:15:59.686] [INFO ] [main   ] [o.s.b.w.e.t.TomcatWebServer   ]                Tomcat initialized with port(s): 8080 (http)
+[2023-03-04 16:15:59.699] [INFO ] [main   ] [o.a.c.h.Http11NioProtocol     ]                Initializing ProtocolHandler ["http-nio-8080"]
+[2023-03-04 16:15:59.700] [INFO ] [main   ] [o.a.c.c.StandardService       ]                Starting service [Tomcat]
+[2023-03-04 16:15:59.700] [INFO ] [main   ] [o.a.c.c.StandardEngine        ]                Starting Servlet engine: [Apache Tomcat/9.0.70]
+[2023-03-04 16:15:59.969] [INFO ] [main   ] [o.a.c.c.C.[.[.[/]             ]                Initializing Spring embedded WebApplicationContext
+[2023-03-04 16:15:59.970] [INFO ] [main   ] [o.s.b.w.s.c.ServletWebServerApplicationContext] Root WebApplicationContext: initialization completed in 3208 ms
+[2023-03-04 16:16:00.425] [INFO ] [main   ] [o.h.j.i.u.LogHelper           ]                HHH000204: Processing PersistenceUnitInfo [name: default]
+[2023-03-04 16:16:00.533] [INFO ] [main   ] [o.h.Version                   ]                HHH000412: Hibernate ORM core version 5.6.14.Final
+[2023-03-04 16:16:00.854] [INFO ] [main   ] [o.h.a.c.Version               ]                HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+[2023-03-04 16:16:01.060] [INFO ] [main   ] [c.z.h.HikariDataSource        ]                HikariPool-1 - Starting...
+[2023-03-04 16:16:01.845] [INFO ] [main   ] [c.z.h.HikariDataSource        ]                HikariPool-1 - Start completed.
+[2023-03-04 16:16:01.889] [INFO ] [main   ] [o.h.d.Dialect                 ]                HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+[2023-03-04 16:16:03.433] [INFO ] [main   ] [o.h.e.t.j.p.i.JtaPlatformInitiator]            HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+[2023-03-04 16:16:03.443] [INFO ] [main   ] [o.s.o.j.LocalContainerEntityManagerFactoryBean] Initialized JPA EntityManagerFactory for persistence unit 'default'
+[2023-03-04 16:16:04.381] [DEBUG] [main   ] [c.p.s.s.TokenAuthenticationFilter]             Filter 'tokenAuthenticationFilter' configured for use
+[2023-03-04 16:16:05.328] [WARN ] [main   ] [o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+[2023-03-04 16:16:05.860] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1ddc5857, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6f0df74, org.springframework.security.web.context.SecurityContextPersistenceFilter@6bb46040, org.springframework.security.web.header.HeaderWriterFilter@113a89c5, org.springframework.web.filter.CorsFilter@42bbd21c, org.springframework.security.web.authentication.logout.LogoutFilter@700596f9, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@6b6cf3c1, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@7021bb55, com.project.server.security.TokenAuthenticationFilter@594fcb22, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@41c56930, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@64a00fe0, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@57f1fbae, org.springframework.security.web.session.SessionManagementFilter@3a0f5141, org.springframework.security.web.access.ExceptionTranslationFilter@407ff25f, org.springframework.security.web.access.intercept.AuthorizationFilter@cbd3871]
+[2023-03-04 16:16:05.866] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/images/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:16:05.867] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/images/**']
+[2023-03-04 16:16:05.867] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/js/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:16:05.870] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/js/**']
+[2023-03-04 16:16:05.871] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/webjars/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:16:05.872] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/webjars/**']
+[2023-03-04 16:16:05.872] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/swagger-ui/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:16:05.873] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/swagger-ui/**']
+[2023-03-04 16:16:05.874] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/swagger-resources/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:16:05.875] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/swagger-resources/**']
+[2023-03-04 16:16:05.876] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/v3/api-docs']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:16:05.881] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/v3/api-docs']
+[2023-03-04 16:16:05.881] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/favicon/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:16:05.881] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/favicon/**']
+[2023-03-04 16:16:06.407] [INFO ] [main   ] [o.a.c.h.Http11NioProtocol     ]                Starting ProtocolHandler ["http-nio-8080"]
+[2023-03-04 16:16:06.437] [INFO ] [main   ] [o.s.b.w.e.t.TomcatWebServer   ]                Tomcat started on port(s): 8080 (http) with context path ''
+[2023-03-04 16:16:07.038] [INFO ] [main   ] [c.p.s.ServerApplication       ]                Started ServerApplication in 11.578 seconds (JVM running for 13.785)
+[2023-03-04 16:16:11.229] [INFO ] [http-nio-8080-exec-2] [o.a.c.c.C.[.[.[/]             ]   Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2023-03-04 16:16:11.230] [INFO ] [http-nio-8080-exec-2] [o.s.w.s.DispatcherServlet     ]   Initializing Servlet 'dispatcherServlet'
+[2023-03-04 16:16:11.231] [INFO ] [http-nio-8080-exec-2] [o.s.w.s.DispatcherServlet     ]   Completed initialization in 1 ms
+[2023-03-04 16:16:11.735] [INFO ] [http-nio-8080-exec-2] [c.p.s.s.AuthService           ]   로그인 성공, 토근 발급 완료
+[2023-03-04 16:16:19.041] [INFO ] [http-nio-8080-exec-3] [c.p.s.s.TokenProvider         ]   refreshToken 재발급 요청
+[2023-03-04 16:16:19.060] [INFO ] [http-nio-8080-exec-3] [c.p.s.s.TokenProvider         ]   refreshToken 만료되지 않았습니다.
+[2023-03-04 16:35:13.575] [INFO ] [SpringApplicationShutdownHook] [o.s.o.j.LocalContainerEntityManagerFactoryBean] Closing JPA EntityManagerFactory for persistence unit 'default'
+[2023-03-04 16:35:13.577] [INFO ] [SpringApplicationShutdownHook] [c.z.h.HikariDataSource        ] HikariPool-1 - Shutdown initiated...
+[2023-03-04 16:35:13.631] [INFO ] [SpringApplicationShutdownHook] [c.z.h.HikariDataSource        ] HikariPool-1 - Shutdown completed.
+[2023-03-04 16:35:22.160] [INFO ] [main   ] [c.p.s.ServerApplication       ]                Starting ServerApplication using Java 17.0.5 on DESKTOP-50G758Q with PID 8404 (C:\project\Backend\out\production\classes started by tkfdk in C:\project\Backend)
+[2023-03-04 16:35:22.164] [DEBUG] [main   ] [c.p.s.ServerApplication       ]                Running with Spring Boot v2.7.7, Spring v5.3.24
+[2023-03-04 16:35:22.164] [INFO ] [main   ] [c.p.s.ServerApplication       ]                The following 1 profile is active: "local"
+[2023-03-04 16:35:23.493] [INFO ] [main   ] [o.s.d.r.c.RepositoryConfigurationDelegate]     Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[2023-03-04 16:35:23.643] [INFO ] [main   ] [o.s.d.r.c.RepositoryConfigurationDelegate]     Finished Spring Data repository scanning in 138 ms. Found 5 JPA repository interfaces.
+[2023-03-04 16:35:24.497] [INFO ] [main   ] [o.s.b.w.e.t.TomcatWebServer   ]                Tomcat initialized with port(s): 8080 (http)
+[2023-03-04 16:35:24.506] [INFO ] [main   ] [o.a.c.h.Http11NioProtocol     ]                Initializing ProtocolHandler ["http-nio-8080"]
+[2023-03-04 16:35:24.507] [INFO ] [main   ] [o.a.c.c.StandardService       ]                Starting service [Tomcat]
+[2023-03-04 16:35:24.508] [INFO ] [main   ] [o.a.c.c.StandardEngine        ]                Starting Servlet engine: [Apache Tomcat/9.0.70]
+[2023-03-04 16:35:24.779] [INFO ] [main   ] [o.a.c.c.C.[.[.[/]             ]                Initializing Spring embedded WebApplicationContext
+[2023-03-04 16:35:24.780] [INFO ] [main   ] [o.s.b.w.s.c.ServletWebServerApplicationContext] Root WebApplicationContext: initialization completed in 2543 ms
+[2023-03-04 16:35:25.019] [INFO ] [main   ] [o.h.j.i.u.LogHelper           ]                HHH000204: Processing PersistenceUnitInfo [name: default]
+[2023-03-04 16:35:25.089] [INFO ] [main   ] [o.h.Version                   ]                HHH000412: Hibernate ORM core version 5.6.14.Final
+[2023-03-04 16:35:25.354] [INFO ] [main   ] [o.h.a.c.Version               ]                HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+[2023-03-04 16:35:25.537] [INFO ] [main   ] [c.z.h.HikariDataSource        ]                HikariPool-1 - Starting...
+[2023-03-04 16:35:26.010] [INFO ] [main   ] [c.z.h.HikariDataSource        ]                HikariPool-1 - Start completed.
+[2023-03-04 16:35:26.032] [INFO ] [main   ] [o.h.d.Dialect                 ]                HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+[2023-03-04 16:35:27.007] [INFO ] [main   ] [o.h.e.t.j.p.i.JtaPlatformInitiator]            HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+[2023-03-04 16:35:27.017] [INFO ] [main   ] [o.s.o.j.LocalContainerEntityManagerFactoryBean] Initialized JPA EntityManagerFactory for persistence unit 'default'
+[2023-03-04 16:35:27.409] [DEBUG] [main   ] [c.p.s.s.TokenAuthenticationFilter]             Filter 'tokenAuthenticationFilter' configured for use
+[2023-03-04 16:35:27.828] [WARN ] [main   ] [o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+[2023-03-04 16:35:28.123] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2d7df55, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@674c01ce, org.springframework.security.web.context.SecurityContextPersistenceFilter@1e60890c, org.springframework.security.web.header.HeaderWriterFilter@6ba516ff, org.springframework.web.filter.CorsFilter@4b8ba6b7, org.springframework.security.web.authentication.logout.LogoutFilter@2b71a12e, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@2ac00dc9, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@1ecbb787, com.project.server.security.TokenAuthenticationFilter@d3b0397, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@52cda4bd, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@292b7a02, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@509e0253, org.springframework.security.web.session.SessionManagementFilter@769c80d1, org.springframework.security.web.access.ExceptionTranslationFilter@672549f3, org.springframework.security.web.access.intercept.AuthorizationFilter@3aebdb4]
+[2023-03-04 16:35:28.127] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/images/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:35:28.127] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/images/**']
+[2023-03-04 16:35:28.128] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/js/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:35:28.128] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/js/**']
+[2023-03-04 16:35:28.128] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/webjars/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:35:28.128] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/webjars/**']
+[2023-03-04 16:35:28.128] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/swagger-ui/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:35:28.129] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/swagger-ui/**']
+[2023-03-04 16:35:28.129] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/swagger-resources/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:35:28.129] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/swagger-resources/**']
+[2023-03-04 16:35:28.129] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/v3/api-docs']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:35:28.130] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/v3/api-docs']
+[2023-03-04 16:35:28.130] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/favicon/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:35:28.130] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/favicon/**']
+[2023-03-04 16:35:28.434] [INFO ] [main   ] [o.a.c.h.Http11NioProtocol     ]                Starting ProtocolHandler ["http-nio-8080"]
+[2023-03-04 16:35:28.455] [INFO ] [main   ] [o.s.b.w.e.t.TomcatWebServer   ]                Tomcat started on port(s): 8080 (http) with context path ''
+[2023-03-04 16:35:28.722] [INFO ] [main   ] [c.p.s.ServerApplication       ]                Started ServerApplication in 7.326 seconds (JVM running for 8.741)
+[2023-03-04 16:35:34.621] [INFO ] [http-nio-8080-exec-1] [o.a.c.c.C.[.[.[/]             ]   Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2023-03-04 16:35:34.621] [INFO ] [http-nio-8080-exec-1] [o.s.w.s.DispatcherServlet     ]   Initializing Servlet 'dispatcherServlet'
+[2023-03-04 16:35:34.622] [INFO ] [http-nio-8080-exec-1] [o.s.w.s.DispatcherServlet     ]   Completed initialization in 1 ms
+[2023-03-04 16:35:34.774] [INFO ] [http-nio-8080-exec-1] [c.p.s.s.TokenProvider         ]   refreshToken 재발급 요청
+[2023-03-04 16:35:34.788] [INFO ] [http-nio-8080-exec-1] [c.p.s.s.TokenProvider         ]   refreshToken 만료되지 않았습니다.
+[2023-03-04 16:53:32.971] [INFO ] [SpringApplicationShutdownHook] [o.s.o.j.LocalContainerEntityManagerFactoryBean] Closing JPA EntityManagerFactory for persistence unit 'default'
+[2023-03-04 16:53:32.972] [INFO ] [SpringApplicationShutdownHook] [c.z.h.HikariDataSource        ] HikariPool-1 - Shutdown initiated...
+[2023-03-04 16:53:32.996] [INFO ] [SpringApplicationShutdownHook] [c.z.h.HikariDataSource        ] HikariPool-1 - Shutdown completed.
+[2023-03-04 16:53:58.184] [INFO ] [main   ] [c.p.s.ServerApplication       ]                Starting ServerApplication using Java 17.0.5 on DESKTOP-50G758Q with PID 7588 (C:\project\Backend\out\production\classes started by tkfdk in C:\project\Backend)
+[2023-03-04 16:53:58.188] [DEBUG] [main   ] [c.p.s.ServerApplication       ]                Running with Spring Boot v2.7.7, Spring v5.3.24
+[2023-03-04 16:53:58.188] [INFO ] [main   ] [c.p.s.ServerApplication       ]                The following 1 profile is active: "local"
+[2023-03-04 16:53:59.380] [INFO ] [main   ] [o.s.d.r.c.RepositoryConfigurationDelegate]     Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[2023-03-04 16:53:59.474] [INFO ] [main   ] [o.s.d.r.c.RepositoryConfigurationDelegate]     Finished Spring Data repository scanning in 83 ms. Found 5 JPA repository interfaces.
+[2023-03-04 16:54:00.122] [INFO ] [main   ] [o.s.b.w.e.t.TomcatWebServer   ]                Tomcat initialized with port(s): 8080 (http)
+[2023-03-04 16:54:00.131] [INFO ] [main   ] [o.a.c.h.Http11NioProtocol     ]                Initializing ProtocolHandler ["http-nio-8080"]
+[2023-03-04 16:54:00.131] [INFO ] [main   ] [o.a.c.c.StandardService       ]                Starting service [Tomcat]
+[2023-03-04 16:54:00.132] [INFO ] [main   ] [o.a.c.c.StandardEngine        ]                Starting Servlet engine: [Apache Tomcat/9.0.70]
+[2023-03-04 16:54:00.309] [INFO ] [main   ] [o.a.c.c.C.[.[.[/]             ]                Initializing Spring embedded WebApplicationContext
+[2023-03-04 16:54:00.309] [INFO ] [main   ] [o.s.b.w.s.c.ServletWebServerApplicationContext] Root WebApplicationContext: initialization completed in 2062 ms
+[2023-03-04 16:54:00.540] [INFO ] [main   ] [o.h.j.i.u.LogHelper           ]                HHH000204: Processing PersistenceUnitInfo [name: default]
+[2023-03-04 16:54:00.597] [INFO ] [main   ] [o.h.Version                   ]                HHH000412: Hibernate ORM core version 5.6.14.Final
+[2023-03-04 16:54:00.790] [INFO ] [main   ] [o.h.a.c.Version               ]                HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+[2023-03-04 16:54:00.934] [INFO ] [main   ] [c.z.h.HikariDataSource        ]                HikariPool-1 - Starting...
+[2023-03-04 16:54:01.257] [INFO ] [main   ] [c.z.h.HikariDataSource        ]                HikariPool-1 - Start completed.
+[2023-03-04 16:54:01.278] [INFO ] [main   ] [o.h.d.Dialect                 ]                HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+[2023-03-04 16:54:02.249] [INFO ] [main   ] [o.h.e.t.j.p.i.JtaPlatformInitiator]            HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+[2023-03-04 16:54:02.257] [INFO ] [main   ] [o.s.o.j.LocalContainerEntityManagerFactoryBean] Initialized JPA EntityManagerFactory for persistence unit 'default'
+[2023-03-04 16:54:02.649] [DEBUG] [main   ] [c.p.s.s.TokenAuthenticationFilter]             Filter 'tokenAuthenticationFilter' configured for use
+[2023-03-04 16:54:03.097] [WARN ] [main   ] [o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+[2023-03-04 16:54:03.397] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2d7df55, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@674c01ce, org.springframework.security.web.context.SecurityContextPersistenceFilter@1e60890c, org.springframework.security.web.header.HeaderWriterFilter@6ba516ff, org.springframework.web.filter.CorsFilter@4b8ba6b7, org.springframework.security.web.authentication.logout.LogoutFilter@2b71a12e, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@2ac00dc9, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@1ecbb787, com.project.server.security.TokenAuthenticationFilter@7657d29f, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@52cda4bd, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@292b7a02, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@509e0253, org.springframework.security.web.session.SessionManagementFilter@769c80d1, org.springframework.security.web.access.ExceptionTranslationFilter@672549f3, org.springframework.security.web.access.intercept.AuthorizationFilter@3aebdb4]
+[2023-03-04 16:54:03.399] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/images/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:54:03.399] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/images/**']
+[2023-03-04 16:54:03.400] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/js/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:54:03.400] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/js/**']
+[2023-03-04 16:54:03.400] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/webjars/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:54:03.400] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/webjars/**']
+[2023-03-04 16:54:03.401] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/swagger-ui/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:54:03.401] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/swagger-ui/**']
+[2023-03-04 16:54:03.401] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/swagger-resources/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:54:03.401] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/swagger-resources/**']
+[2023-03-04 16:54:03.402] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/v3/api-docs']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:54:03.402] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/v3/api-docs']
+[2023-03-04 16:54:03.402] [WARN ] [main   ] [o.s.s.c.a.w.b.WebSecurity     ]                You are asking Spring Security to ignore Ant [pattern='/favicon/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+[2023-03-04 16:54:03.403] [INFO ] [main   ] [o.s.s.w.DefaultSecurityFilterChain]            Will not secure Ant [pattern='/favicon/**']
+[2023-03-04 16:54:03.747] [INFO ] [main   ] [o.a.c.h.Http11NioProtocol     ]                Starting ProtocolHandler ["http-nio-8080"]
+[2023-03-04 16:54:03.767] [INFO ] [main   ] [o.s.b.w.e.t.TomcatWebServer   ]                Tomcat started on port(s): 8080 (http) with context path ''
+[2023-03-04 16:54:04.052] [INFO ] [main   ] [c.p.s.ServerApplication       ]                Started ServerApplication in 6.569 seconds (JVM running for 7.973)
+[2023-03-04 16:54:09.353] [INFO ] [http-nio-8080-exec-1] [o.a.c.c.C.[.[.[/]             ]   Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2023-03-04 16:54:09.354] [INFO ] [http-nio-8080-exec-1] [o.s.w.s.DispatcherServlet     ]   Initializing Servlet 'dispatcherServlet'
+[2023-03-04 16:54:09.357] [INFO ] [http-nio-8080-exec-1] [o.s.w.s.DispatcherServlet     ]   Completed initialization in 3 ms
+[2023-03-04 16:58:02.399] [INFO ] [SpringApplicationShutdownHook] [o.s.o.j.LocalContainerEntityManagerFactoryBean] Closing JPA EntityManagerFactory for persistence unit 'default'
+[2023-03-04 16:58:02.399] [INFO ] [SpringApplicationShutdownHook] [c.z.h.HikariDataSource        ] HikariPool-1 - Shutdown initiated...
+[2023-03-04 16:58:02.434] [INFO ] [SpringApplicationShutdownHook] [c.z.h.HikariDataSource        ] HikariPool-1 - Shutdown completed.

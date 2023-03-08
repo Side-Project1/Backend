@@ -68,13 +68,13 @@ public class TokenProvider {
     }
 
     @Transactional
-    public Map<String, String> createTokenForLocal(LoginRequest loginRequest) {
+    public Map<String, String> createTokenForLocal(UUID uuid) {
 
         Date now = new Date();
         Map<String, String> tokens = new HashMap<>();
 
         String accessToken = Jwts.builder()
-                .setSubject(String.valueOf(loginRequest.getUserId()))
+                .setSubject(String.valueOf(uuid))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec()))      // 30분
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
@@ -86,7 +86,7 @@ public class TokenProvider {
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
 
-        User user = userRepository.findByUserId(loginRequest.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User", "id", loginRequest.getUserId()));
+        User user = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User", "id", uuid));
         UserToken userToken = UserToken.builder()
                 .refreshToken(refreshToken)
                 .build();
