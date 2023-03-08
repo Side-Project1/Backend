@@ -1,10 +1,7 @@
 package com.project.server.entity;
 
 import com.project.server.security.AuthProvider;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -13,7 +10,8 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class User extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,7 +21,7 @@ public class User extends BaseTime {
     private String userId;
     @Column
     private String password;
-    @Column(nullable = false)
+    @Column
     private String userName;
     @Column
     private String phone;

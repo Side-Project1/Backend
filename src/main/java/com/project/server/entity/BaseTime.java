@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 public abstract class BaseTime {
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDate; // 생성시간
 
     @LastModifiedDate
-    private LocalDateTime updatedDate;
+    private LocalDateTime updatedDate; // 수정시간
 }
