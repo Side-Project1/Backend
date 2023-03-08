@@ -1,9 +1,12 @@
 package com.project.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.server.security.AuthProvider;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -45,4 +48,25 @@ public class User extends BaseTime {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "token_id")
     private UserToken userToken;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<Resume> resumes=new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonBackReference //순환참조 방지
+    private List<Study> studies =new ArrayList<>();
+
+
+
+    public void writeStudy(Study study){
+        this.studies.add(study);
+        study.createdByUser(this);
+    }
+
+    public void writeResume(Resume resume){
+        this.resumes.add(resume);
+        resume.createdByUser(this);
+    }
+
 }

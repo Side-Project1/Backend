@@ -33,6 +33,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
 	//AppProperties
+//	implementation 'org.springframework.boot:spring-boot-configuration-processor:true'
 
 	implementation 'mysql:mysql-connector-java'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
@@ -44,6 +45,10 @@ dependencies {
 
 	// swagger ui
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+
+	//aws s3 img upload
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 	// Mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'

@@ -6,6 +6,7 @@ import com.project.server.http.response.ApiRes;
 import com.project.server.entity.User;
 import com.project.server.entity.UserToken;
 import com.project.server.exception.ResourceNotFoundException;
+import com.project.server.http.response.ApiResponse;
 import com.project.server.repository.UserRepository;
 import com.project.server.repository.UserTokenRepository;
 import com.project.server.util.CustomCookie;
@@ -159,11 +160,11 @@ public class TokenProvider {
         } catch(ExpiredJwtException e) {    // refreshToken이 만료된 경우 재발급
             UserToken userToken = UserToken.builder()
                     .refreshToken(Jwts.builder()
-                                .setSubject(String.valueOf(user.getId()))
-                                .setExpiration(expiryDate) // 시간 변경 예정
-                                .setIssuedAt(new Date(System.currentTimeMillis()))
-                                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
-                                .compact())
+                            .setSubject(String.valueOf(user.getId()))
+                            .setExpiration(expiryDate) // 시간 변경 예정
+                            .setIssuedAt(new Date(System.currentTimeMillis()))
+                            .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
+                            .compact())
                     .build();
             user.setUserToken(userToken);
 
