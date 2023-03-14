@@ -7,6 +7,7 @@ import com.project.server.security.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,9 @@ import java.util.UUID;
 public class AuthController {
     private final AuthService authService;
 
+    @Value("${my.test}")
+    private String test;
+
     @Operation(summary = "사용자 테스트", description = "사용자 테스트")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK !!"),
@@ -30,7 +34,9 @@ public class AuthController {
     })
     @PostMapping("/login")
     public ResponseEntity authenticateUser(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+        System.out.println(test);
         return authService.login(loginRequest, response);
+
     }
 
     @Operation(summary = "사용자 테스트", description = "사용자 테스트")

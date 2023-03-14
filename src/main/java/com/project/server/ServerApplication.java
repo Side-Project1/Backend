@@ -2,6 +2,8 @@ package com.project.server;
 
 import com.project.server.config.AppProperties;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,10 +14,17 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @EnableConfigurationProperties(AppProperties.class)
 @SpringBootApplication
+@Slf4j
 public class ServerApplication {
 
+
+
+
 	public static void main(String[] args) {
+
+
 		SpringApplication.run(ServerApplication.class, args);
+
 	}
 
 

@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
-@ConfigurationProperties(prefix = "app")
 @Component
 public class AppProperties {
     private final Auth auth = new Auth();
