@@ -2,7 +2,7 @@ package com.project.server.controller;
 
 import com.project.server.entity.Resume;
 import com.project.server.http.request.ResumeRequest;
-import com.project.server.http.response.ApiResponse;
+import com.project.server.http.response.ApiRes;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +61,7 @@ public class ResumeController {
     public ResponseEntity findById(@PathVariable Long resumeId) {
 
         resumeService.findById(resumeId);
-        return new ResponseEntity(new ApiResponse("이력서 상세 보기 성공", HttpStatus.OK), HttpStatus.OK);
+        return new ResponseEntity(new ApiRes("이력서 상세 보기 성공", HttpStatus.OK), HttpStatus.OK);
 
     }
 
@@ -69,7 +69,7 @@ public class ResumeController {
     @GetMapping("/user/{userId}")
     public ResponseEntity findByUserId(@PathVariable String userId) {
          resumeService.findByUser(userId);
-        return new ResponseEntity(new ApiResponse("이력서 조회 성공", HttpStatus.OK), HttpStatus.OK);
+        return new ResponseEntity(new ApiRes("이력서 조회 성공", HttpStatus.OK), HttpStatus.OK);
 
     }
 
@@ -90,7 +90,7 @@ public class ResumeController {
         resumeRequest.setProfileImgUrl(profileurl);
 
         resumeService.writeResume(userId,resumeRequest);
-        return new ResponseEntity(new ApiResponse("이력서 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
+        return new ResponseEntity(new ApiRes("이력서 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
     }
 
 
@@ -112,7 +112,7 @@ public class ResumeController {
         resumeRequest.setProfileImgUrl(filename);
 
         resumeService.updateResume(userId, resumeId, resumeRequest,profile);
-        return new ResponseEntity(new ApiResponse("이력서 수정 성공", HttpStatus.OK), HttpStatus.OK);
+        return new ResponseEntity(new ApiRes("이력서 수정 성공", HttpStatus.OK), HttpStatus.OK);
 
     }
 
@@ -120,7 +120,7 @@ public class ResumeController {
     @DeleteMapping("/{userId}/{resumeId}/delete")
     public ResponseEntity deleteStudyById(@PathVariable String userId,@PathVariable Long resumeId) {
         resumeService.deleteResumeById(userId, resumeId);
-        return new ResponseEntity(new ApiResponse("이력서 삭제 성공", HttpStatus.ACCEPTED), HttpStatus.ACCEPTED);
+        return new ResponseEntity(new ApiRes("이력서 삭제 성공", HttpStatus.ACCEPTED), HttpStatus.ACCEPTED);
 
     }
 

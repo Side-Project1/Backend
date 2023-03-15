@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -61,8 +60,8 @@ public class AuthService {
             Optional<User> user = userRepository.findByUserId(loginRequest.getUserId());
             if (user.isPresent()) {
                 if(passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())){
-                    Map<String, String> tokens = tokenProvider.createTokenForLocal(user.get().getId());
-                    response.setHeader("Authorization", tokens.get("accessToken"));
+                    String tokens = tokenProvider.createToken(user.get().getId());
+                    response.setHeader("Authorization", tokens);
                     log.info("로그인 성공, 토근 발급 완료");
                     return new ResponseEntity(new ApiRes("로그인 성공", HttpStatus.OK), HttpStatus.OK);
                 }else {
@@ -82,7 +81,4 @@ public class AuthService {
         return tokenProvider.renewalRefreshToken(id, rep);
     }
 
-    public ResponseEntity apiTest() {
-        return new ResponseEntity(new ApiRes("로그인 성공", HttpStatus.OK, userRepository.findByUserId("dnd2dnd")), HttpStatus.OK);
-    }
 }

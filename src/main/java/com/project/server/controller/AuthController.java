@@ -25,18 +25,6 @@ import java.util.UUID;
 public class AuthController {
     private final AuthService authService;
 
-    @Operation(tags = "Auth", summary = "API 연결 테스트")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK !!"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
-            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
-    })
-    @GetMapping("")
-    public ResponseEntity apiTest() {
-        return authService.apiTest();
-    }
-
     @Operation(tags = "Auth", summary = "사용자 로그인")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),

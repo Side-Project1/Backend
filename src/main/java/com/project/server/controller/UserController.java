@@ -1,5 +1,6 @@
 package com.project.server.controller;
 
+
 import com.project.server.entity.User;
 import com.project.server.repository.UserRepository;
 import com.project.server.service.EmailService;
@@ -9,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +22,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
-
+    private final RedisTemplate redisTemplate;
     private final EmailService emailService;
     private final UserRepository userRepository;
 
@@ -33,6 +36,10 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/me")
     public void getCurrentUser(@ApiIgnore @AuthUser User user) {
+//        ValueOperations<String, String> valueOperation = redisTemplate.opsForValue();
+//        String token = valueOperation.get("dnd2dnd2");
+//        System.out.println(token);
+
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getClass());   //테스트 용
         System.out.println(SecurityContextHolder.getContext().getAuthentication());   //테스트 용
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());   //테스트 용

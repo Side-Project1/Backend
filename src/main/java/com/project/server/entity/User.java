@@ -45,9 +45,6 @@ public class User extends BaseTime {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "token_id")
-    private UserToken userToken;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonBackReference

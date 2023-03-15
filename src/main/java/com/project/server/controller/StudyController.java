@@ -3,7 +3,7 @@ package com.project.server.controller;
 import com.project.server.entity.Study;
 import com.project.server.entity.StudyCategory;
 import com.project.server.http.request.StudyRequest;
-import com.project.server.http.response.ApiResponse;
+import com.project.server.http.response.ApiRes;
 import com.project.server.repository.StudyRepository;
 import com.project.server.service.StudyService;
 import io.swagger.annotations.ApiOperation;
@@ -49,14 +49,14 @@ public class StudyController {
                 studyList.getTotalElements(), studyList.getTotalPages(), studyList.getSize(),
                 studyList.getNumber(), studyList.getNumberOfElements());
 
-        return new ResponseEntity(new ApiResponse("스터디 조회 성공", HttpStatus.OK), HttpStatus.OK);
+        return new ResponseEntity(new ApiRes("스터디 조회 성공", HttpStatus.OK), HttpStatus.OK);
     }
     @ApiOperation(value = "스터디 상제 조회")
     @GetMapping("/{studyId}")
     public ResponseEntity findById(@PathVariable("studyId") Long studyId) {
 
         studyService.findById(studyId);
-        return new ResponseEntity(new ApiResponse("스터디 상세 보기 성공", HttpStatus.OK), HttpStatus.OK);
+        return new ResponseEntity(new ApiRes("스터디 상세 보기 성공", HttpStatus.OK), HttpStatus.OK);
     }
 
 
@@ -65,7 +65,7 @@ public class StudyController {
     @GetMapping("/category/{category}")
     public ResponseEntity findByCategory(@PathVariable StudyCategory category) {
          studyService.findByCategory(category);
-        return new ResponseEntity(new ApiResponse("스터디 카테고리 보기 성공", HttpStatus.OK), HttpStatus.OK);
+        return new ResponseEntity(new ApiRes("스터디 카테고리 보기 성공", HttpStatus.OK), HttpStatus.OK);
 
     }
 
@@ -73,7 +73,7 @@ public class StudyController {
     @GetMapping("/user/{userId}")
     public ResponseEntity findByUserId(@PathVariable String userId) {
              studyService.findByUser(userId);
-        return new ResponseEntity(new ApiResponse("사용자가 작성한 스터디 보기 성공", HttpStatus.OK), HttpStatus.OK);
+        return new ResponseEntity(new ApiRes("사용자가 작성한 스터디 보기 성공", HttpStatus.OK), HttpStatus.OK);
 
     }
 
@@ -82,7 +82,7 @@ public class StudyController {
     public ResponseEntity writeStudy(@PathVariable("userId") String userId,
                                       @RequestBody StudyRequest studyRequest) {
          studyService.writeStudy(userId, studyRequest);
-        return new ResponseEntity(new ApiResponse("스터디 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
+        return new ResponseEntity(new ApiRes("스터디 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
 
     }
 
@@ -91,7 +91,7 @@ public class StudyController {
     public ResponseEntity updateStudy(@PathVariable String userId,@PathVariable Long studyId,
                              @RequestBody StudyRequest studyRequest) {
         studyService.updateStudy(userId, studyId, studyRequest);
-        return new ResponseEntity(new ApiResponse("스터디 수정 성공", HttpStatus.OK), HttpStatus.OK);
+        return new ResponseEntity(new ApiRes("스터디 수정 성공", HttpStatus.OK), HttpStatus.OK);
 
     }
 
@@ -99,7 +99,7 @@ public class StudyController {
     @DeleteMapping("/{userId}/{studyId}/delete")
     public ResponseEntity deleteStudyById(@PathVariable String userId, @PathVariable Long studyId) {
         studyService.deleteStudyById(userId, studyId);
-        return new ResponseEntity(new ApiResponse("스터디 삭제 성공", HttpStatus.OK), HttpStatus.OK);
+        return new ResponseEntity(new ApiRes("스터디 삭제 성공", HttpStatus.OK), HttpStatus.OK);
 
     }
 

@@ -44,14 +44,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 tokenProvider.reGenerateRefreshToken(userId);
             }
             else {
-//                boolean check = false;
-//                for (String s : whiteList) {
-//                    if (request.getRequestURI().contains(s)){
-//                        check = true;
-//                        break;
-//                    }
-//                }
-//                if(!check)
                 log.error("유효한 JWT 토큰이 없습니다!!, uri: {}", request.getRequestURI());
             }
         }
