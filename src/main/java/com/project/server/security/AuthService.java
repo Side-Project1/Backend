@@ -49,6 +49,7 @@ public class AuthService {
                     .gender(signUpRequest.getGender())
                     .build();
             userRepository.save(user);
+            log.info("회원 가입 성공");
             return new ResponseEntity(new ApiRes("회원가입 성공", HttpStatus.CREATED), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
@@ -62,6 +63,7 @@ public class AuthService {
                 if(passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())){
                     Map<String, String> tokens = tokenProvider.createTokenForLocal(user.get().getId());
                     response.setHeader("Authorization", tokens.get("accessToken"));
+                    log.info("로그인 성공, 토근 발급 완료");
                     return new ResponseEntity(new ApiRes("로그인 성공", HttpStatus.OK), HttpStatus.OK);
                 }else {
                     throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -78,5 +80,9 @@ public class AuthService {
 
     public ResponseEntity renewalRefreshToken(UUID id, HttpServletResponse rep) {
         return tokenProvider.renewalRefreshToken(id, rep);
+    }
+
+    public ResponseEntity apiTest() {
+        return new ResponseEntity(new ApiRes("로그인 성공", HttpStatus.OK, userRepository.findByUserId("dnd2dnd")), HttpStatus.OK);
     }
 }

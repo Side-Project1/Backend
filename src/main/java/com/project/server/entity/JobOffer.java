@@ -1,8 +1,10 @@
 package com.project.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -20,17 +22,22 @@ public class JobOffer extends BaseBoard{
     @Column
     private String title;
     @Column
+    private String category;        // 카테고리
+    @Column
     private String place;
     @Column
-    private LocalDateTime stDt;     // 일하는 시작 날짜
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private LocalDate stDt;     // 일하는 시작 날짜
     @Column
-    private LocalDateTime enDt;     // 일 종료 날짜
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private LocalDate enDt;     // 일 종료 날짜
     @Column
-    private LocalDateTime wStT;    // 일 시작 시간
+    private String wst;    // 일 시작 시간
     @Column
-    private LocalDateTime wEnT;     // 일 종료 시간
+    private String wet;     // 일 종료 시간
     @Column
-    private LocalDateTime deadLine; // 공고 마감일
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private LocalDate deadLine; // 공고 마감일
     @Column
     private boolean deadLineCheck; // 공고 마감 버튼 true 공고 마감, false 공고 중
     @Column
@@ -51,6 +58,10 @@ public class JobOffer extends BaseBoard{
     private String content;         // 자유 내용
     @Column
     private String salary;          // 급여
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }
 
 

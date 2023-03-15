@@ -86,6 +86,7 @@ public class EmailService {
             mimeMessageHelper.setText(userRepository.findByEmail(emailRequest.getReceiver()).get().getUserId(), true);
             javaMailSender.send(mimeMessage);
 
+            log.error("아이디 찾기 메일 전송");
             return new ResponseEntity(new ApiRes("아이디 찾기 메일 전송 성공", HttpStatus.OK), HttpStatus.OK);
         } catch (MessagingException e) {
             log.error("[EmailService.send()] error {}", e.getMessage());
