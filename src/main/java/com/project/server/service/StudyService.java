@@ -14,13 +14,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 
-
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,11 +37,55 @@ public class StudyService {
     private final StudyRepository studyRepository;
     private final UserRepository userRepository;
 
+    private static final String STUDY_VIEW_COUNT_KEY = "study:viewCount:";
+    private static final int EXPIRATION_DAYS = 1;
+    private final RedisTemplate redisTemplate;
+
+    public class RedisUtil {
+        public static long getUnixTime(LocalDateTime localDateTime) {
+            return localDateTime.toEpochSecond(ZoneOffset.UTC);
+        }
+    }
+
+
+
     @Transactional(readOnly = true)
-    public Study findById(Long studyId) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Board is not Found!")));
-        return study;
+    public Long findById(Long studyId, String username) {
+            String studyViewCountKey = STUDY_VIEW_COUNT_KEY + studyId;
+            HashOperations<String, String, Long> hashOps = redisTemplate.opsForHash();
+
+            // 현재 시간을 UTC 기준으로 계산
+            LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+            LocalDateTime expirationTime = now.plusDays(EXPIRATION_DAYS);
+
+            long unixTime = RedisUtil.getUnixTime(expirationTime);
+
+            // Redis hash에 사용자 이름과 만료 시간을 저장
+            boolean isNewUser = hashOps.putIfAbsent(studyViewCountKey,username, expirationTime.toEpochSecond(ZoneOffset.UTC));
+            if (!isNewUser) {
+                // 이미 사용자가 저장되어 있으면 만료 시간을 가져옴
+                Long expirationTimestamp = hashOps.get(studyViewCountKey, username);
+                if (expirationTimestamp != null && expirationTimestamp < now.toEpochSecond(ZoneOffset.UTC)) {
+                    // 저장된 만료 시간이 지났으면 사용자 아이디와 만료 시간을 갱신
+                    hashOps.put(studyViewCountKey, username, expirationTime.toEpochSecond(ZoneOffset.UTC));
+                } else {
+                    // 아직 만료 시간이 지나지 않았으면 조회수를 증가시키지 않음
+                    Study study = studyRepository.findById(studyId).orElseThrow(() -> new RuntimeException("Study not found"));
+                    System.out.println(study.getViewCount());
+                    return study.getViewCount();
+                }
+            } else {
+                // 새로운 사용자라면 만료 시간(하루) 설정
+                redisTemplate.expireAt(studyViewCountKey, Instant.ofEpochSecond(unixTime));
+            }
+
+            // 조회수를 증가시키고 결과를 반환
+            long viewCount = hashOps.increment(studyViewCountKey, "viewCount", 1L);
+            Study study = studyRepository.findById(studyId).orElseThrow(() -> new RuntimeException("Study not found"));
+            study.setViewCount(viewCount);
+            System.out.println(study.getViewCount());
+
+            return study.getViewCount();
     }
 
     //전체 조회
@@ -90,15 +139,12 @@ public class StudyService {
         User user = userRepository.findByUserId(userId) .orElseThrow(() -> new IllegalArgumentException(String.format("user is not Found!")));
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new IllegalArgumentException(String.format("stydy is not Found!")));
         checkStudyLoginUser(user, study);
-
-
         study.update(
                 studyRequest.getTitle(),
                 studyRequest.getMax(),
                 studyRequest.getRegion(),
                 studyRequest.getContents(),
                 studyRequest.getCategory());
-
     }
 
     //삭제

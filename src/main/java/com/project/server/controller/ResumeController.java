@@ -28,17 +28,17 @@ import java.util.List;
 public class ResumeController {
 
     private final ResumeService resumeService;
-    private final  ResumeRepository resumeRepository;
+    private final ResumeRepository resumeRepository;
     private final S3Service s3Service;
 
 
     @ApiOperation(value = "전체 이력서 조회")
     @GetMapping("/all")
-    public List<ResumeRequest> findAll(){
+    public List<ResumeRequest> findAll() {
         List<Resume> all = resumeRepository.findAll();
         List<ResumeRequest> allPost = new ArrayList<>();
 
-        for(Resume resume : all){
+        for (Resume resume : all) {
             ResumeRequest build = ResumeRequest.builder()
                     .major(resume.getMajor())
                     .career(resume.getCareer())
@@ -68,57 +68,55 @@ public class ResumeController {
     @ApiOperation(value = "사용자가 작성한 이력서 모아보기")
     @GetMapping("/user/{userId}")
     public ResponseEntity findByUserId(@PathVariable String userId) {
-         resumeService.findByUser(userId);
+        resumeService.findByUser(userId);
         return new ResponseEntity(new ApiRes("이력서 조회 성공", HttpStatus.OK), HttpStatus.OK);
 
     }
 
     @ApiOperation(value = "AWS S3 이미지 업로드 및 이력서 등록")
-    @PostMapping(value="/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity writeResume(@PathVariable String userId, @RequestBody(required = false) MultipartFile profile, ResumeRequest resumeRequest) throws IOException {
 
-        if (resumeRequest.getFile().size()==1){
-            String portfoliourl=s3Service.uploadFile(resumeRequest.getFile().get(0));
+        if (resumeRequest.getFile().size() == 1) {
+            String portfoliourl = s3Service.uploadFile(resumeRequest.getFile().get(0));
             resumeRequest.setPortfolioUrl(portfoliourl.toString());
 
-        }
-        else {
+        } else {
             List<String> portfoliourl = s3Service.uploadFiles(resumeRequest.getFile());
             resumeRequest.setPortfolioUrl(portfoliourl.toString());
         }
-        String profileurl=s3Service.uploadFile(profile);
+        String profileurl = s3Service.uploadFile(profile);
         resumeRequest.setProfileImgUrl(profileurl);
 
-        resumeService.writeResume(userId,resumeRequest);
+        resumeService.writeResume(userId, resumeRequest);
         return new ResponseEntity(new ApiRes("이력서 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
     }
 
 
     @ApiOperation(value = "이력서 수정")
     @PutMapping(value = "/{userId}/{resumeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity updateResume(@PathVariable String userId,@PathVariable Long resumeId,MultipartFile profile,
-                              ResumeRequest resumeRequest) throws IOException {
+    public ResponseEntity updateResume(@PathVariable String userId, @PathVariable Long resumeId, MultipartFile profile,
+                                       ResumeRequest resumeRequest) throws IOException {
 
-        if (resumeRequest.getFile().size()==1){
-            String url=s3Service.uploadFile(resumeRequest.getFile().get(0));
+        if (resumeRequest.getFile().size() == 1) {
+            String url = s3Service.uploadFile(resumeRequest.getFile().get(0));
             resumeRequest.setPortfolioUrl(url.toString());
-        }
-        else {
+        } else {
             List<String> url = s3Service.uploadFiles(resumeRequest.getFile());
             resumeRequest.setPortfolioUrl(url.toString());
         }
-        String filename=s3Service.uploadFile(profile);
+        String filename = s3Service.uploadFile(profile);
 
         resumeRequest.setProfileImgUrl(filename);
 
-        resumeService.updateResume(userId, resumeId, resumeRequest,profile);
+        resumeService.updateResume(userId, resumeId, resumeRequest, profile);
         return new ResponseEntity(new ApiRes("이력서 수정 성공", HttpStatus.OK), HttpStatus.OK);
 
     }
 
     @ApiOperation(value = "이력서 삭제")
     @DeleteMapping("/{userId}/{resumeId}/delete")
-    public ResponseEntity deleteStudyById(@PathVariable String userId,@PathVariable Long resumeId) {
+    public ResponseEntity deleteStudyById(@PathVariable String userId, @PathVariable Long resumeId) {
         resumeService.deleteResumeById(userId, resumeId);
         return new ResponseEntity(new ApiRes("이력서 삭제 성공", HttpStatus.ACCEPTED), HttpStatus.ACCEPTED);
 

@@ -2,9 +2,13 @@ package com.project.server.controller;
 
 import com.project.server.entity.Study;
 import com.project.server.entity.StudyCategory;
+import com.project.server.entity.User;
 import com.project.server.http.request.StudyRequest;
 import com.project.server.http.response.ApiRes;
 import com.project.server.repository.StudyRepository;
+import com.project.server.repository.UserRepository;
+import com.project.server.security.CustomUserDetailsService;
+import com.project.server.security.CustomUserPrincipal;
 import com.project.server.service.StudyService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,8 +20,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name="Study", description = "스터디 API")
 @RequiredArgsConstructor
@@ -26,6 +33,7 @@ import java.util.List;
 @Slf4j
 public class StudyController {
     private final StudyRepository studyRepository;
+    private final UserRepository userRepository;
     private final StudyService studyService;
 
 
@@ -36,8 +44,8 @@ public class StudyController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
 
-
     @ApiOperation(value = "전체 스터디 조회")
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/all")
     public ResponseEntity findAll(@PageableDefault Pageable pageable,
                                        @RequestParam(required = false) String title,
@@ -52,16 +60,25 @@ public class StudyController {
         return new ResponseEntity(new ApiRes("스터디 조회 성공", HttpStatus.OK), HttpStatus.OK);
     }
     @ApiOperation(value = "스터디 상제 조회")
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/{studyId}")
-    public ResponseEntity findById(@PathVariable("studyId") Long studyId) {
+    public ResponseEntity findById(@PathVariable("studyId") Long studyId, Authentication authentication) {
+        CustomUserPrincipal userDetails = (CustomUserPrincipal) authentication.getPrincipal();
 
-        studyService.findById(studyId);
+
+        Optional<User> user =userRepository.findByEmail(userDetails.getUsername());
+
+
+        System.out.println("userinfo"+user.get().getUserName());
+        studyService.findById(studyId,user.get().getUserName());
+
         return new ResponseEntity(new ApiRes("스터디 상세 보기 성공", HttpStatus.OK), HttpStatus.OK);
     }
 
 
 
     @ApiOperation(value = "스터디 카테고리 별 조회")
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/category/{category}")
     public ResponseEntity findByCategory(@PathVariable StudyCategory category) {
          studyService.findByCategory(category);
@@ -70,6 +87,7 @@ public class StudyController {
     }
 
     @ApiOperation(value = "사용자가 쓴 스터디 글 조회")
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/user/{userId}")
     public ResponseEntity findByUserId(@PathVariable String userId) {
              studyService.findByUser(userId);
@@ -78,6 +96,7 @@ public class StudyController {
     }
 
     @ApiOperation(value = "스터디 글 등록")
+    @PreAuthorize("hasAnyRole('USER')")
     @PostMapping("/{userId}")
     public ResponseEntity writeStudy(@PathVariable("userId") String userId,
                                       @RequestBody StudyRequest studyRequest) {
@@ -87,6 +106,7 @@ public class StudyController {
     }
 
     @ApiOperation(value = "사용자가 쓴 스터디 글 수정")
+    @PreAuthorize("hasAnyRole('USER')")
     @PutMapping("/{userId}/{studyId}/write")
     public ResponseEntity updateStudy(@PathVariable String userId,@PathVariable Long studyId,
                              @RequestBody StudyRequest studyRequest) {
@@ -96,11 +116,11 @@ public class StudyController {
     }
 
     @ApiOperation(value = "사용자가 쓴 스터디 글 삭제")
+    @PreAuthorize("hasAnyRole('USER')")
     @DeleteMapping("/{userId}/{studyId}/delete")
     public ResponseEntity deleteStudyById(@PathVariable String userId, @PathVariable Long studyId) {
         studyService.deleteStudyById(userId, studyId);
         return new ResponseEntity(new ApiRes("스터디 삭제 성공", HttpStatus.OK), HttpStatus.OK);
-
     }
 
 }

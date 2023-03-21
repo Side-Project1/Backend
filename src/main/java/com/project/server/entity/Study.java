@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -32,9 +33,8 @@ public class Study extends BaseTime {
 
     @Column
     private String contents; // 자유 양식
-
     @Column(name="VIEW_COUNT")
-    private int viewCount; //조회수
+    private Long viewCount; //조회수
 
     @ManyToOne
     @JsonManagedReference

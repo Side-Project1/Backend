@@ -136,6 +136,8 @@ public class S3Service {
         return result;
     }
 
+
+
     //다중 파일 삭제
     public void deleteFiles(List<String> filename) {
        // DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, filename);

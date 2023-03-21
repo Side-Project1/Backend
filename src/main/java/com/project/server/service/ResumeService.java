@@ -72,6 +72,7 @@ public class ResumeService {
 
     }
 
+
     //삭제
     @Transactional
     public void deleteResumeById(String userId, Long studyId) {
@@ -80,16 +81,16 @@ public class ResumeService {
         checkResumeLoginUser(user, resume);
 
         //저장할 때 애초에 스트링으로 바꾸기
-        String s = resume.getPortfolioUrl().replace("[", "");
-        String ss = s.replace("]", "");
-        List<String> lists = Stream.of(ss.split(", ")).toList();
+        String file = resume.getPortfolioUrl().replace("[", "").replace("]", "");
+        List<String> files = Stream.of(file.split(", ")).toList();
 
 
-        if (lists.size() == 1) {
+        if (files.size() == 1) {
             s3Service.deleteFile(resume.getPortfolioUrl());
 
         } else {
-             s3Service.deleteFiles(lists);
+
+             s3Service.deleteFiles(files);
         }
         s3Service.deleteFile(resume.getProfileImgUrl());
         resumeRepository.deleteById(studyId);
