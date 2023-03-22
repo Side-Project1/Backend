@@ -67,6 +67,7 @@ public class StudyService {
                 Long expirationTimestamp = hashOps.get(studyViewCountKey, username);
                 if (expirationTimestamp != null && expirationTimestamp < now.toEpochSecond(ZoneOffset.UTC)) {
                     // 저장된 만료 시간이 지났으면 사용자 아이디와 만료 시간을 갱신
+                    System.out.println("시간 만료");
                     hashOps.put(studyViewCountKey, username, expirationTime.toEpochSecond(ZoneOffset.UTC));
                 } else {
                     // 아직 만료 시간이 지나지 않았으면 조회수를 증가시키지 않음
