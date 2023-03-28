@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum DeleteStatus {
+public enum Status {
     Y("Y"),N("N");
     private final String value;
 }

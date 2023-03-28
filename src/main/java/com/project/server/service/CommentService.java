@@ -4,7 +4,6 @@ import com.project.server.entity.*;
 import com.project.server.http.request.CommentRequest;
 import com.project.server.http.response.ApiRes;
 import com.project.server.http.response.CommentResponse;
-import com.project.server.repository.UserRepository;
 import com.project.server.repository.comment.CommentRepository;
 import com.project.server.repository.comment.CommentRepositoryCustomImpl;
 import com.project.server.repository.promotion.PromotionRepository;
@@ -42,7 +41,7 @@ public class CommentService {
                         .refStep(0l)
                         .parent(null)
                         .childCount(0l)
-                        .isDeleted(DeleteStatus.N)
+                        .isDeleted(Status.N)
                         .isPrivated(commentRequest.getIsPrivated())
                         .build();
 //                User commentUser = userRepository.findById(user.getId()).orElseThrow();
@@ -60,7 +59,7 @@ public class CommentService {
                         .refStep(commentRepository.findMaxStep(parent.getRef()) + 1l)
                         .parent(parent)
                         .childCount(0l)
-                        .isDeleted(DeleteStatus.N)
+                        .isDeleted(Status.N)
                         .isPrivated(commentRequest.getIsPrivated())
                         .build();
                 commentRepository.save(comment);
@@ -78,7 +77,7 @@ public class CommentService {
             List<CommentResponse> commentList = commentRepositoryCustom.findAllByPromotion(pageable, promotionId);
 
             commentList.forEach(data -> {
-                if (data.getIsPrivated().getValue().equals(DeleteStatus.Y.getValue()) && !data.getUserId().equals(user.getUserId())) {
+                if (data.getIsPrivated().getValue().equals(Status.Y.getValue()) && !data.getUserId().equals(user.getUserId())) {
                     data.setComments("비밀 댓글입니다");
                 }
             });
@@ -98,9 +97,9 @@ public class CommentService {
                 throw new Exception("댓글 삭제 권한이 없습니다.");
             }
 
-            if(comment.getIsDeleted() == DeleteStatus.N) {
+            if(comment.getIsDeleted() == Status.N) {
                 comment.setComments("댓글이 삭제되었습니다.");
-                comment.setIsDeleted(DeleteStatus.Y);
+                comment.setIsDeleted(Status.Y);
                 return new ResponseEntity(new ApiRes("댓글 삭제 완료", HttpStatus.OK), HttpStatus.OK);
             } else {
                 return new ResponseEntity(new ApiRes("이미 삭제된 댓글입니다.", HttpStatus.OK), HttpStatus.OK);

@@ -1,17 +1,12 @@
 package com.project.server.http.request;
 
-import com.project.server.entity.Comment;
-import com.project.server.entity.DeleteStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor

@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -46,11 +44,11 @@ public class Comment extends BaseTime {
 
     @Column(name = "is_deleted")
     @Enumerated(value = EnumType.STRING)
-    private DeleteStatus isDeleted;
+    private Status isDeleted;
 
     @Column(name = "is_privated")
     @Enumerated(value = EnumType.STRING)
-    private DeleteStatus isPrivated;
+    private Status isPrivated;
 
 //    public void update(CommentRequest commentRequest) {
 //        this.content = commentRequest.getContent();
