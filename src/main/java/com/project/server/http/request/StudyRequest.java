@@ -11,7 +11,6 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@Builder
 @Getter
 @Setter
 public class StudyRequest {
