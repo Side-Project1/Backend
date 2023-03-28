@@ -60,7 +60,7 @@ public class JobOffer extends BaseBoard{
     private String salary;          // 급여
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_sn")
     private User user;
 }
 

@@ -38,7 +38,7 @@ public class Study extends BaseTime {
 
     @ManyToOne
     @JsonManagedReference
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_sn")
     private User user;
 
 //    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval = true)

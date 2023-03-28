@@ -17,7 +17,7 @@ import java.util.UUID;
 @Setter
 public class User extends BaseTime {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     @Column(name = "user_sn", columnDefinition = "BINARY(16)")
     private UUID id;
     @Column
@@ -46,6 +46,9 @@ public class User extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+//    private List<Comment> comments = new ArrayList<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Resume> resumes=new ArrayList<>();
@@ -54,6 +57,12 @@ public class User extends BaseTime {
     @JsonBackReference //순환참조 방지
     private List<Study> studies =new ArrayList<>();
 
+//    public void addComment(Comment comment) {
+//        if (comment != null) {
+//            this.comments.add(comment);
+//            comment.setUser(this);
+//        }
+//    }
 
 
     public void writeStudy(Study study){

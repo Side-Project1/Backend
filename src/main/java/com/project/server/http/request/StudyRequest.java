@@ -1,5 +1,6 @@
 package com.project.server.http.request;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.project.server.entity.StudyCategory;
@@ -10,10 +11,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@Builder
 @Getter
 @Setter
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class StudyRequest {
     private String title; //제목
     private String author;

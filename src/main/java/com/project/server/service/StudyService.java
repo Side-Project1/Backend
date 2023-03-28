@@ -70,7 +70,7 @@ public class StudyService {
     //글 생성
     @Transactional
     public Long writeStudy(String userId, StudyRequest studyRequest) {
-        User user = userRepository.findByUserId(userId) .orElseThrow(() -> new IllegalArgumentException(String.format("user is not Found!")));
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException(String.format("user is not Found!")));
         Study study = Study.builder()
                 .title(studyRequest.getTitle())
                 .author(user.getClass().getName())

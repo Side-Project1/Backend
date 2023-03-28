@@ -17,7 +17,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @Tag(name="Study", description = "스터디 API")
 @RequiredArgsConstructor
@@ -81,9 +80,8 @@ public class StudyController {
     @PostMapping("/{userId}")
     public ResponseEntity writeStudy(@PathVariable("userId") String userId,
                                       @RequestBody StudyRequest studyRequest) {
-         studyService.writeStudy(userId, studyRequest);
+        studyService.writeStudy(userId, studyRequest);
         return new ResponseEntity(new ApiRes("스터디 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
-
     }
 
     @ApiOperation(value = "사용자가 쓴 스터디 글 수정")

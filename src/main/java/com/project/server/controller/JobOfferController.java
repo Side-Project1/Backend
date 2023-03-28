@@ -1,6 +1,5 @@
 package com.project.server.controller;
 
-import com.project.server.entity.JobOffer;
 import com.project.server.entity.User;
 import com.project.server.http.request.JobOfferPageRequest;
 import com.project.server.http.request.JobOfferRequest;
@@ -11,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;

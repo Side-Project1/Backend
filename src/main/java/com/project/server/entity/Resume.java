@@ -46,7 +46,7 @@ public class Resume extends BaseTime{
     private String portfolioUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_sn")
     @JsonBackReference
     private User user;
 
