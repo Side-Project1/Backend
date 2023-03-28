@@ -2,7 +2,7 @@ package com.project.server.controller;
 
 import com.project.server.entity.User;
 import com.project.server.http.request.CommentRequest;
-import com.project.server.service.CommentService;
+import com.project.server.CommentService;
 import com.project.server.util.AuthUser;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;

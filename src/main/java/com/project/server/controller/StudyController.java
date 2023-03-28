@@ -80,7 +80,6 @@ public class StudyController {
     @PostMapping("/{userId}")
     public ResponseEntity writeStudy(@PathVariable("userId") String userId,
                                       @RequestBody StudyRequest studyRequest) {
-        log.info("abc");
         studyService.writeStudy(userId, studyRequest);
         return new ResponseEntity(new ApiRes("스터디 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
     }
