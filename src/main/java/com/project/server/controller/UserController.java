@@ -2,25 +2,26 @@ package com.project.server.controller;
 
 
 import com.project.server.entity.User;
-import com.project.server.exception.ResourceNotFoundException;
-import com.project.server.http.request.LoginRequest;
 import com.project.server.repository.UserRepository;
 import com.project.server.service.EmailService;
+import com.project.server.util.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Tag(name="User", description = "유저 API")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
-
+    private final RedisTemplate redisTemplate;
     private final EmailService emailService;
     private final UserRepository userRepository;
 
@@ -31,11 +32,19 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/me")
-    public void getCurrentUser() {
+    public void getCurrentUser(@ApiIgnore @AuthUser User user) {
+//        ValueOperations<String, String> valueOperation = redisTemplate.opsForValue();
+//        String token = valueOperation.get("dnd2dnd2");
+//        System.out.println(token);
+
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getClass());   //테스트 용
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());   //테스트 용
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());   //테스트 용
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass());   //테스트 용
+        System.out.println(user.getEmail());
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());   //테스트 용
-//        return userRepository.findByUserId(loginRequest.getUserId())
-//                .orElseThrow(() -> new ResourceNotFoundException("User", "id", loginRequest.getUserId()));
     }
 
 }

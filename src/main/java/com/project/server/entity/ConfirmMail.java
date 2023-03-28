@@ -17,7 +17,7 @@ import java.util.UUID;
 public class ConfirmMail extends BaseTime{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id", columnDefinition = "BINARY(16)")
+    @Column(name = "user_sn", columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column

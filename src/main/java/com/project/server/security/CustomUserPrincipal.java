@@ -8,18 +8,24 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.*;
 
-public class CustomUserPrincipal  implements OAuth2User, UserDetails {
+public class CustomUserPrincipal implements OAuth2User, UserDetails {
     private UUID id;
     private String email;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
+    private User user;
 
-    public CustomUserPrincipal(UUID id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public User getUser() {
+        return user;
+    }
+
+    public CustomUserPrincipal(UUID id, String email, String password, Collection<? extends GrantedAuthority> authorities, User user) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+        this.user = user;
     }
 
     public static CustomUserPrincipal create(User user) {
@@ -30,7 +36,8 @@ public class CustomUserPrincipal  implements OAuth2User, UserDetails {
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
-                authorities
+                authorities,
+                user
         );
     }
 
@@ -94,6 +101,7 @@ public class CustomUserPrincipal  implements OAuth2User, UserDetails {
 
     @Override
     public String getName() {
+        System.out.println("이건데?");
         return String.valueOf(id);
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -49,6 +48,7 @@ public class AuthService {
                     .gender(signUpRequest.getGender())
                     .build();
             userRepository.save(user);
+            log.info("회원 가입 성공");
             return new ResponseEntity(new ApiRes("회원가입 성공", HttpStatus.CREATED), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
@@ -60,8 +60,9 @@ public class AuthService {
             Optional<User> user = userRepository.findByUserId(loginRequest.getUserId());
             if (user.isPresent()) {
                 if(passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())){
-                    Map<String, String> tokens = tokenProvider.createTokenForLocal(user.get().getId());
-                    response.setHeader("Authorization", tokens.get("accessToken"));
+                    String tokens = tokenProvider.createToken(user.get().getId());
+                    response.setHeader("Authorization", tokens);
+                    log.info("로그인 성공, 토근 발급 완료");
                     return new ResponseEntity(new ApiRes("로그인 성공", HttpStatus.OK), HttpStatus.OK);
                 }else {
                     throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -79,4 +80,5 @@ public class AuthService {
     public ResponseEntity renewalRefreshToken(UUID id, HttpServletResponse rep) {
         return tokenProvider.renewalRefreshToken(id, rep);
     }
+
 }

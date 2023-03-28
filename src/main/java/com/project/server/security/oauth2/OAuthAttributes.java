@@ -32,9 +32,6 @@ public class OAuthAttributes {
     }
 
     public static OAuthAttributes of(String registrationId, String nameAttributeKey, Map<String, Object> attributes) {
-        System.out.println(attributes);
-        System.out.println(registrationId);
-        System.out.println(nameAttributeKey);
         if(registrationId.equalsIgnoreCase(AuthProvider.kakao.toString())) {
             return ofKakao(nameAttributeKey, attributes);
         } else if (registrationId.equalsIgnoreCase(AuthProvider.naver.toString())) {

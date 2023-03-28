@@ -3,12 +3,13 @@ package com.project.server.controller;
 import com.project.server.http.response.ApiRes;
 import com.project.server.http.request.LoginRequest;
 import com.project.server.http.request.SignUpRequest;
+import com.project.server.repository.UserRepository;
 import com.project.server.security.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +18,14 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
+@Tag(name="Auth", description = "Auth API")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthService authService;
 
-    @Operation(summary = "사용자 테스트", description = "사용자 테스트")
+    @Operation(tags = "Auth", summary = "사용자 로그인")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
@@ -35,7 +37,7 @@ public class AuthController {
         return authService.login(loginRequest, response);
     }
 
-    @Operation(summary = "사용자 테스트", description = "사용자 테스트")
+    @Operation(tags = "Auth", summary = "회원가입")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
@@ -47,7 +49,7 @@ public class AuthController {
         return authService.signUp(signUpRequest);
     }
 
-    @Operation(summary = "사용자 테스트", description = "사용자 테스트")
+    @Operation(tags = "Auth", summary = "토큰 재발급")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),

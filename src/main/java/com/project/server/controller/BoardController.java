@@ -1,6 +1,6 @@
 package com.project.server.controller;
 
-import com.project.server.service.BoardService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/board")
 public class BoardController {
-    private final BoardService boardService;
+//    private final BoardService boardService;
 
 //    @GetMapping("")
 //    public DefaultResponse getBoard(@PageableDefault(page = 0, size = 10) Pageable pageable) {

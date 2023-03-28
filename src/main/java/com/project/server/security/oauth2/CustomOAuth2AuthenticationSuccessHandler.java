@@ -61,8 +61,8 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthentic
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
-        Map<String, String> tokens = tokenProvider.createToken(authentication);
-        return UriComponentsBuilder.fromUriString(targetUrl).queryParam("Authorization", tokens.get("accessToken")).build().toUriString();
+        String accessToken = tokenProvider.createTokenOAuth2(authentication);
+        return UriComponentsBuilder.fromUriString(targetUrl).queryParam("Authorization", accessToken).build().toUriString();
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
@@ -72,8 +72,7 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthentic
 
     private boolean isAuthorizedRedirectUri(String uri) {
         URI clientRedirectUri = URI.create(uri);
-
-        return appProperties.getOauth2().getAuthorizedRedirectUris()
+        return appProperties.getAuthorizedRedirectUris()
                 .stream()
                 .anyMatch(authorizedRedirectUri -> {
                     // Only validate host and port. Let the clients use different paths if they want to

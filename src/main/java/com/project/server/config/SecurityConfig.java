@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -43,7 +42,10 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/images/**", "/js/**", "/webjars/**");
+        //Spring Seucrity 로직을 수행하지 않고 아래 요청에 접근
+        return (web) -> web.ignoring().
+                antMatchers("/images/**", "/js/**", "/webjars/**", "/swagger-ui/**",
+                        "/swagger-resources/**", "/v3/api-docs", "/favicon/**");
     }
 
     @Bean
@@ -79,10 +81,10 @@ public class SecurityConfig {
                     .and()
                 .authorizeHttpRequests()    // 요청에 대한 사용권한 체크
                     .antMatchers( "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs", "/favicon*").permitAll()
-                    .antMatchers("/login/**").permitAll()
+//                    .antMatchers("/login/**").permitAll()
                     .antMatchers("/auth/**").permitAll()
                     .antMatchers("/oauth2/**").permitAll()
-                    .antMatchers("/api/v1/email/**").permitAll()
+//                    .antMatchers("/api/v1/email/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .oauth2Login()
