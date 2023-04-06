@@ -4,6 +4,7 @@ import com.project.server.entity.*;
 import com.project.server.http.request.CommentRequest;
 import com.project.server.http.response.ApiRes;
 import com.project.server.http.response.CommentResponse;
+import com.project.server.repository.UserRepository;
 import com.project.server.repository.comment.CommentRepository;
 import com.project.server.repository.comment.CommentRepositoryCustomImpl;
 import com.project.server.repository.promotion.PromotionRepository;
@@ -22,19 +23,19 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-//    private final UserRepository userRepository;
+    private final UserRepository userRepository;
     private final PromotionRepository promotionRepository;
     private final CommentRepository commentRepository;
     private final CommentRepositoryCustomImpl commentRepositoryCustom;
 
     public ResponseEntity createComment(User user, CommentRequest commentRequest){
         try {
-            Promotion promotion = promotionRepository.findById(commentRequest.getPromotionId()).orElseThrow(()->new IllegalStateException("게시글이 존재하지 않습니다"));
+            Promotions promotions = promotionRepository.findById(commentRequest.getPromotionId()).orElseThrow(()->new IllegalStateException("게시글이 존재하지 않습니다"));
             // 댓글 그룹번호 NVL 함수  NULL 이면 0, NULL 아니면 최대값 리턴
             Long commentsRef = commentRepository.findNvlRef(commentRequest.getPromotionId());
             if(commentRequest.getCommentId() == 0) { // 0 이면 댓글, 아니면 대댓글 저장
                 Comment comment = Comment.builder()
-                        .promotion(promotion)
+                        .promotions(promotions)
                         .user(user)
                         .comments(commentRequest.getComments())
                         .ref(commentsRef + 1l)
@@ -44,15 +45,15 @@ public class CommentService {
                         .isDeleted(Status.N)
                         .isPrivated(commentRequest.getIsPrivated())
                         .build();
-//                User commentUser = userRepository.findById(user.getId()).orElseThrow();
-//                commentUser.addComment(comment);
                 commentRepository.save(comment);
+                User saveUser = userRepository.findById(user.getId()).get();
+                saveUser.getComments().add(comment);
                 return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK), HttpStatus.OK);
             } else {
                 Comment parent = commentRepository.findById(commentRequest.getCommentId()).orElseThrow(()->new IllegalStateException("댓글이 존재하지 않습니다"));
 
                 Comment comment = Comment.builder()
-                        .promotion(promotion)
+                        .promotions(promotions)
                         .user(user)
                         .comments("@"+parent.getUser().getUserId() + " " + commentRequest.getComments())
                         .ref(parent.getRef())

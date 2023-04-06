@@ -17,14 +17,14 @@ import java.util.UUID;
 public class JobOffer extends BaseBoard{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "job_offer_sn", columnDefinition = "BINARY")
+    @Column(name = "job_offer_sn")
     private Integer id;
     @Column
     private String title;
     @Column
     private String category;        // 카테고리
     @Column
-    private String place;
+    private String place;           // 지역
     @Column
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate stDt;     // 일하는 시작 날짜

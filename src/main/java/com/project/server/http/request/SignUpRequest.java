@@ -14,4 +14,6 @@ public class SignUpRequest {
     private String email;
     private String birthday;
     private String gender;
+    private String job;
+    private String path;
 }

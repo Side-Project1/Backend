@@ -31,12 +31,13 @@ public class User extends BaseTime {
     @Column(nullable = false, unique = true)
     private String email;
     @Column
-    private String birthday;
+    private String birthday;    // 생일
     @Column
-    private String gender;
-
+    private String gender;      // 성별
     @Column
-    private String imageUrl;
+    private String job;         // 직업
+    @Column
+    private String path;        // 가입 경로
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private AuthProvider provider;
@@ -46,8 +47,14 @@ public class User extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-//    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    @JsonBackReference
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Promotions> promotionsList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonBackReference

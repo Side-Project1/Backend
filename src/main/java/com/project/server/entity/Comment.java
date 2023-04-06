@@ -20,7 +20,7 @@ public class Comment extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="promotion_id")
-    private Promotion promotion;
+    private Promotions promotions;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_sn")

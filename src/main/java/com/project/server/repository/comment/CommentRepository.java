@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long>, CommentRepositoryCustom {
-    @Query(value = "SELECT coalesce(MAX(c.ref), 0) FROM Comment c WHERE c.promotion.id = :promId")
+    @Query(value = "SELECT coalesce(MAX(c.ref), 0) FROM Comment c WHERE c.promotions.id = :promId")
     Long findNvlRef(@Param("promId") Long promId);
     @Query(value = "SELECT MAX(c.refStep) FROM Comment c WHERE c.ref = :ref")
     Long findMaxStep(@Param("ref") Long ref);
