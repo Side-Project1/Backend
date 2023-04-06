@@ -47,7 +47,7 @@ public class CommentService {
                         .build();
                 commentRepository.save(comment);
                 User saveUser = userRepository.findById(user.getId()).get();
-                saveUser.getComments().add(comment);
+                saveUser.getCommentList().add(comment);
                 return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK), HttpStatus.OK);
             } else {
                 Comment parent = commentRepository.findById(commentRequest.getCommentId()).orElseThrow(()->new IllegalStateException("댓글이 존재하지 않습니다"));

@@ -8,12 +8,11 @@ import com.project.server.entity.JobCategory;
 import com.project.server.entity.Promotions;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -23,7 +22,6 @@ public class PromotionResponse {
     private String title;
     private String contents;
     private String writer;
-    private List<Comment> commentList;
     private List<JobCategory> jobCategoryList;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDate;
@@ -31,7 +29,7 @@ public class PromotionResponse {
     private LocalDateTime updateDate;
 
     @Getter
-    public static class Response {
+    public static class UserResponse {
         private Long id;
         private String title;
         private String contents;
@@ -40,7 +38,7 @@ public class PromotionResponse {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime updateDate;
 
-        public Response(Promotions promotions) {
+        public UserResponse(Promotions promotions) {
             this.id = promotions.getId();
             this.title = promotions.getTitle();
             this.contents = promotions.getContents();
@@ -50,14 +48,12 @@ public class PromotionResponse {
     }
 
 
-    @Builder
-    public PromotionResponse(String title, String contents, String writer, List<Comment> commentList, List<JobCategory> jobCategoryList, LocalDateTime createdDate, LocalDateTime updateDate) {
-        this.title = title;
-        this.contents = contents;
-        this.writer = writer;
-        this.commentList = commentList;
-        this.jobCategoryList = jobCategoryList;
-        this.createdDate = createdDate;
-        this.updateDate = updateDate;
+    public PromotionResponse(Promotions promotions) {
+        this.title = promotions.getTitle();
+        this.contents = promotions.getContents();
+        this.writer = promotions.getUser().getUserId();
+        this.jobCategoryList = promotions.getJobCategoryList();
+        this.createdDate = promotions.getCreatedDate();
+        this.updateDate = promotions.getUpdatedDate();
     }
 }

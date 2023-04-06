@@ -40,15 +40,7 @@ public class PromotionService {
     public ResponseEntity getPromotion(Long id) {
         try {
             Promotions promotions = promotionRepository.findById(id).orElseThrow(()->new IllegalStateException("게시글이 존재하지 않습니다"));
-            PromotionResponse promotionResponse = PromotionResponse.builder()
-                    .title(promotions.getTitle())
-                    .contents(promotions.getContents())
-                    .writer(promotions.getUser().getUserId())
-                    .commentList(promotions.getCommentList())
-                    .jobCategoryList(promotions.getJobCategoryList())
-                    .createdDate(promotions.getCreatedDate())
-                    .updateDate(promotions.getUpdatedDate())
-                    .build();
+            PromotionResponse promotionResponse = new PromotionResponse(promotions);
             return new ResponseEntity(new ApiRes("홍보글 조회 성공", HttpStatus.OK, promotionResponse), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes("홍보글 조회 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -62,8 +54,8 @@ public class PromotionService {
                     .contents(promotionRequest.getContents())
                     .user(user)
                     .build();
-            promotionRepository.save(promotions);
             promotionRequest.getSubCategory().forEach(id -> promotions.getJobCategoryList().add(new JobCategory(id)));
+            promotionRepository.save(promotions);
             User saveUser = userRepository.findById(user.getId()).get();
             saveUser.getPromotionsList().add(promotions);
             return new ResponseEntity(new ApiRes("홍보글 생성 성공", HttpStatus.OK), HttpStatus.OK);
