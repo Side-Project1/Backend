@@ -21,12 +21,11 @@ public class PromotionController {
 
     @GetMapping("")
     public ResponseEntity getPagePromotion(@PageableDefault Pageable pageable, @RequestBody(required = false) PromotionPageRequest promotionPageRequest) {
-        System.out.println(pageable);
         return promotionService.getPagePromotion(pageable, promotionPageRequest);
     }
 
     @GetMapping("/{promotionId}")
-    public ResponseEntity getPromotion(@PathVariable(name = "promotionId") Long id ) {
+    public ResponseEntity getPromotion(@PathVariable(name = "promotionId") Long id) {
         return promotionService.getPromotion(id);
     }
 

@@ -5,6 +5,7 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
+import com.project.server.entity.Photo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -55,6 +56,9 @@ public class S3Service {
             case "csv":
                 contentType = "text/csv";
                 break;
+            case "pdf":
+                contentType = "image/pdf";
+                break;
         }
 
         try {
@@ -72,88 +76,66 @@ public class S3Service {
 
     }
 
-    //다중 파일 업로드
-    public List<String> uploadFiles(List<MultipartFile> multipartFile) throws IOException {
-        List<String> filenameList = new ArrayList<>();
-        multipartFile.forEach(files -> {
-            String fileName = UUID.randomUUID() + "-" + files.getOriginalFilename();
-            //파일 형식 구하기
-            String ext = fileName.split("\\.")[1];
+    public String deleteFile(String name) {
+        String result = "success";
+        String filename = name.substring(name.lastIndexOf('/') + 1, name.length());
+        System.out.println(filename);
+        System.out.println(name);
 
-            String contentType = "";
-            //content type을 지정해서 올려주지 않으면 자동으로 "application/octet-stream"으로 고정이 되서 링크 클릭시 웹에서 열리는게 아니라 자동 다운이 시작됨.
-            switch (ext) {
-                case "jpeg":
-                    contentType = "image/jpeg";
-                    break;
-                case "png":
-                    contentType = "image/png";
-                    break;
-                case "txt":
-                    contentType = "text/plain";
-                    break;
-                case "csv":
-                    contentType = "text/csv";
-                    break;
-            }
 
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType(contentType);
-            try (InputStream inputStream = files.getInputStream()) {
-                amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, metadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
-            } catch (IOException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
-            }
-            filenameList.add(fileName);
-        });
-        return filenameList;
-    }
-
+        amazonS3Client.deleteObject(bucket, name);
+            return result;
+        }
 
     //단일 파일 삭제
-    public String deleteFile(String fileName) {
+    public String deleteFiles(List<Photo> photoList) {
+        if(photoList!=null && !photoList.isEmpty()){
+            for (Photo photo:photoList){
+                amazonS3Client.deleteObject(bucket, photo.getFileName());
+            }
+
+        }
         String result = "success";
 
-        String name = fileName.substring(fileName.lastIndexOf('/') + 1, fileName.length());
-        log.info(name);
-
-        try {
-            boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, name);
-            System.out.println(isObjectExist);
-
-            if (isObjectExist) {
-                amazonS3Client.deleteObject(bucket, name);
-                log.info(name);
-                log.info("단일 파일 삭제 성공");
-            } else {
-                result = "file not found";
-            }
-        } catch (Exception e) {
-            log.debug("Delete File failed", e);
-        }
+//        String name = fileName.substring(fileName.lastIndexOf('/') + 1, fileName.length());
+//        log.info(name);
+//
+//        try {
+//            boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, name);
+//            System.out.println(isObjectExist);
+//
+//            if (isObjectExist) {
+//                amazonS3Client.deleteObject(bucket, name);
+//                log.info(name);
+//                log.info("단일 파일 삭제 성공");
+//            } else {
+//                result = "file not found";
+//            }
+//        } catch (Exception e) {
+//            log.debug("Delete File failed", e);
+//        }
 
         return result;
     }
 
     //다중 파일 삭제
-    public void deleteFiles(List<String> filename) {
-       // DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, filename);
-        filename.forEach(files -> {
-            // String result = "success";
-            String keys = files.substring(files.lastIndexOf('/') + 1, files.length());
-           // DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket,keys);
-            System.out.println("삭제 여부 확인" + keys);
-            boolean isObjectExist = amazonS3Client.doesObjectExist(bucket,keys);
-            System.out.println(isObjectExist);
-            if (isObjectExist) {
-               amazonS3Client.deleteObject(new DeleteObjectRequest(bucket,keys));
-                log.info("삭제 성공");
-            } else {
-                log.info("file not found");
-            }
-        });
-    }
+//    public void deleteFiles(List<String> filename) {
+//       // DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, filename);
+//        filename.forEach(files -> {
+//            // String result = "success";
+//            String keys = files.substring(files.lastIndexOf('/') + 1, files.length());
+//           // DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket,keys);
+//            System.out.println("삭제 여부 확인" + keys);
+//            boolean isObjectExist = amazonS3Client.doesObjectExist(bucket,keys);
+//            System.out.println(isObjectExist);
+//            if (isObjectExist) {
+//               amazonS3Client.deleteObject(new DeleteObjectRequest(bucket,keys));
+//                log.info("삭제 성공");
+//            } else {
+//                log.info("file not found");
+//            }
+//        });
+//    }
 
 
     public ResponseEntity<byte[]> getObject(String storedFileName) throws IOException {

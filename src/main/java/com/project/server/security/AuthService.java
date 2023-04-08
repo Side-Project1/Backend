@@ -46,6 +46,9 @@ public class AuthService {
                     .provider(AuthProvider.local)
                     .role(Role.USER)
                     .gender(signUpRequest.getGender())
+                    .job(signUpRequest.getJob())
+//                    .category(signUpRequest.getCategory())
+                    .path(signUpRequest.getPath())
                     .build();
             userRepository.save(user);
             log.info("회원 가입 성공");
