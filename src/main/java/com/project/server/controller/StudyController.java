@@ -1,7 +1,6 @@
 package com.project.server.controller;
 
 import com.project.server.entity.Study;
-import com.project.server.entity.StudyCategory;
 import com.project.server.exception.ResourceNotFoundException;
 import com.project.server.http.request.StudyApplyRequest;
 import com.project.server.http.request.StudyRequest;

@@ -72,7 +72,7 @@ public class JobOfferController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
     @PreAuthorize("hasAnyRole('USER')")
-    @PutMapping("{jobOfferSn}")
+    @PutMapping("/{jobOfferSn}")
     public ResponseEntity updateJobOffer(@ApiIgnore @AuthUser User user, @PathVariable("jobOfferSn") Integer id,
                                          @RequestBody JobOfferRequest jobOfferRequest) {
         return jobOfferService.updateJobOffer(user, id, jobOfferRequest);
@@ -99,7 +99,7 @@ public class JobOfferController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
     @PreAuthorize("hasAnyRole('USER')")
-    @DeleteMapping("{jobOfferSn}")
+    @DeleteMapping("/{jobOfferSn}")
     public ResponseEntity deleteJobOffer(@ApiIgnore @AuthUser User user, @PathVariable("jobOfferSn") Integer id) {
         return jobOfferService.deleteJobOffer(user, id);
     }

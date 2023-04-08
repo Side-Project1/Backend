@@ -14,7 +14,6 @@ import java.util.List;
 
 @Data
 @ToString(exclude = "user")
-
 public class Resume extends BaseTime{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -42,7 +42,7 @@ public class CommentService {
                         .refStep(0l)
                         .parent(null)
                         .childCount(0l)
-                        .isDeleted(Status.N)
+                        .isDeleted(EnumStatus.Status.N)
                         .isPrivated(commentRequest.getIsPrivated())
                         .build();
                 commentRepository.save(comment);
@@ -60,7 +60,7 @@ public class CommentService {
                         .refStep(commentRepository.findMaxStep(parent.getRef()) + 1l)
                         .parent(parent)
                         .childCount(0l)
-                        .isDeleted(Status.N)
+                        .isDeleted(EnumStatus.Status.N)
                         .isPrivated(commentRequest.getIsPrivated())
                         .build();
                 commentRepository.save(comment);
@@ -78,7 +78,7 @@ public class CommentService {
             List<CommentResponse> commentList = commentRepositoryCustom.findAllByPromotion(pageable, promotionId);
 
             commentList.forEach(data -> {
-                if (data.getIsPrivated().getValue().equals(Status.Y.getValue()) && !data.getUserId().equals(user.getUserId())) {
+                if (data.getIsPrivated().getValue().equals(EnumStatus.Status.Y.getValue()) && !data.getUserId().equals(user.getUserId())) {
                     data.setComments("비밀 댓글입니다");
                 }
             });
@@ -98,9 +98,9 @@ public class CommentService {
                 throw new Exception("댓글 삭제 권한이 없습니다.");
             }
 
-            if(comment.getIsDeleted() == Status.N) {
+            if(comment.getIsDeleted() == EnumStatus.Status.N) {
                 comment.setComments("댓글이 삭제되었습니다.");
-                comment.setIsDeleted(Status.Y);
+                comment.setIsDeleted(EnumStatus.Status.Y);
                 return new ResponseEntity(new ApiRes("댓글 삭제 완료", HttpStatus.OK), HttpStatus.OK);
             } else {
                 return new ResponseEntity(new ApiRes("이미 삭제된 댓글입니다.", HttpStatus.OK), HttpStatus.OK);
@@ -121,56 +121,4 @@ public class CommentService {
         }
     }
 
-
-//    //댓글 등록
-//    @CacheEvict(value = COMMENTS, key = "#studyId")
-//    public List<CommentDto> findCommentsByStudyId(Long studyId) {
-//        studyRepository.findById(studyId).orElseThrow(()->new IllegalStateException("게시글이 존재하지 않습니다"));
-//        return convertNestedStructure(commentRepository.findCommentByStudyId(studyId));
-//    }
-//
-//    @Transactional
-//    @CacheEvict(value = COMMENTS, key = "#requestDto.studyId")
-//    public CommentDto createComment(CommentRequest requestDto) {
-//        Comment comment = commentRepository.save(
-//                Comment.createComment(requestDto.getContent(),
-//                        studyRepository.findById(requestDto.getStudyId()).orElseThrow(()->new IllegalStateException("게시글이 존재하지 않습니다")),
-//                        userRepository.findByUserName(requestDto.getUserName()).orElseThrow(()->new IllegalStateException("사용자가 존재하지 않습니다")),
-//
-//                        commentRepository.findById(requestDto.getParentId()).orElseThrow(()->new IllegalStateException("존재하지 않습니다.")))
-//                );
-//
-//        return CommentDto.convertCommentToDto(comment);
-//    }
-//
-//    @Transactional
-//    public void deleteComment(Long commentId) {
-//        Comment comment = commentRepository.findCommentByIdWithParent(commentId).orElseThrow(() -> new IllegalStateException("존재하지 않음"));
-//        cacheService.deleteCommentsCache(comment.getStudy().getId());
-//        if (comment.getChildren().size() != 0) {
-//            comment.changeDeletedStatus(DeleteStatus.Y);
-//        } else {
-//            commentRepository.delete(getDeletableAncestorComment(comment));
-//        }
-//    }
-//
-//    private Comment getDeletableAncestorComment(Comment comment) {
-//        Comment parent = comment.getParent();
-//        if (parent != null && parent.getChildren().size() == 1 && parent.getIsDeleted() == DeleteStatus.Y)
-//            return getDeletableAncestorComment(parent);
-//        return comment;
-//    }
-//
-//
-//    private List<CommentDto> convertNestedStructure(List<Comment> comments) {
-//        List<CommentDto> result = new ArrayList<>();
-//        Map<Long, CommentDto> map = new HashMap<>();
-//        comments.stream().forEach(c -> {
-//            CommentDto dto = CommentDto.convertCommentToDto(c);
-//            map.put(dto.getId(), dto);
-//            if (c.getParent() != null) map.get(c.getParent().getId()).getChildren().add(dto);
-//            else result.add(dto);
-//        });
-//        return result;
-//    }
 }

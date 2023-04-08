@@ -44,11 +44,11 @@ public class Comment extends BaseTime {
 
     @Column(name = "is_deleted")
     @Enumerated(value = EnumType.STRING)
-    private Status isDeleted;
+    private EnumStatus.Status isDeleted;
 
     @Column(name = "is_privated")
     @Enumerated(value = EnumType.STRING)
-    private Status isPrivated;
+    private EnumStatus.Status isPrivated;
 
 //    public void update(CommentRequest commentRequest) {
 //        this.content = commentRequest.getContent();

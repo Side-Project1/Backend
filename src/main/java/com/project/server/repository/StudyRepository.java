@@ -1,7 +1,6 @@
 package com.project.server.repository;
 
 import com.project.server.entity.Study;
-import com.project.server.entity.StudyCategory;
 import com.project.server.entity.User;
 import com.project.server.repository.Study.StudyRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;

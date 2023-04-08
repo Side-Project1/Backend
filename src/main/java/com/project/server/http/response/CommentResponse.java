@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.project.server.entity.Comment;
-import com.project.server.entity.Status;
+import com.project.server.entity.EnumStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,9 +25,9 @@ public class CommentResponse {
     private Long parentId;
     private Long childCount;
     @Enumerated(value = EnumType.STRING)
-    private Status isDeleted;
+    private EnumStatus.Status isDeleted;
     @Enumerated(value = EnumType.STRING)
-    private Status isPrivated;
+    private EnumStatus.Status isPrivated;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDate;
 
