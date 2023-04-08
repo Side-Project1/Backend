@@ -63,6 +63,10 @@ public class User extends BaseTime {
     @JsonBackReference //순환참조 방지
     private List<Study> studies =new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonBackReference //순환참조 방지
+    private List<StudyMember> members =new ArrayList<>();
+
 //    public void addComment(Comment comment) {
 //        if (comment != null) {
 //            this.comments.add(comment);

@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StudyRepository extends JpaRepository<Study ,Long>, StudyRepositoryCustom {
-    List<Study> findByCategory(StudyCategory studyCategory);
+//    List<Study> findByCategory(StudyCategory studyCategory);
     List<Study> findByUser(Optional<User> user);
 
-
+    List<Study> findByOwner(User owner);
 
 
 }

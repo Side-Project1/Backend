@@ -40,14 +40,12 @@ public class ResumeController {
 
         for(Resume resume : all){
             ResumeRequest build = ResumeRequest.builder()
-                    .major(resume.getMajor())
+                    .title(resume.getTitle())
+                    .certificate(resume.getCertificate())
                     .career(resume.getCareer())
                     .school(resume.getSchool())
-                    .award(resume.getAward())
-                    .profileImgUrl(resume.getProfileImgUrl())
-                    .area(resume.getArea())
-                    .contents(resume.getContents())
-                    .portfolioUrl(resume.getPortfolioUrl())
+                    .job(resume.getJob())
+                    .link(resume.getLink())
                     .build();
 
             allPost.add(build);
@@ -75,43 +73,33 @@ public class ResumeController {
 
     @ApiOperation(value = "AWS S3 이미지 업로드 및 이력서 등록")
     @PostMapping(value="/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity writeResume(@PathVariable String userId, @RequestBody(required = false) MultipartFile profile, ResumeRequest resumeRequest) throws IOException {
+    public ResponseEntity writeResume(@PathVariable String userId,  ResumeRequest resumeRequest,MultipartFile[] files )  throws IOException {
 
-        if (resumeRequest.getFile().size()==1){
-            String portfoliourl=s3Service.uploadFile(resumeRequest.getFile().get(0));
-            resumeRequest.setPortfolioUrl(portfoliourl.toString());
+//        for (MultipartFile file : files){
+//            String fileName=file.getOriginalFilename();
+//            String fileUrl= s3Service.uploadFile(file);
+//            long fileSize=file.getSize();
+//
+//        }
+//        if (resumeRequest.getFile()){
+//            String portfoliourl=s3Service.uploadFile(resumeRequest.getFile().get(0));
+//            resumeRequest.setPortfolioUrl(portfoliourl.toString());
+//
+//        }
+//        String profileurl=s3Service.uploadFile(profile);
+//        resumeRequest.setProfileImgUrl(profileurl);
 
-        }
-        else {
-            List<String> portfoliourl = s3Service.uploadFiles(resumeRequest.getFile());
-            resumeRequest.setPortfolioUrl(portfoliourl.toString());
-        }
-        String profileurl=s3Service.uploadFile(profile);
-        resumeRequest.setProfileImgUrl(profileurl);
-
-        resumeService.writeResume(userId,resumeRequest);
+        resumeService.writeResume(userId,resumeRequest, files);
         return new ResponseEntity(new ApiRes("이력서 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
     }
 
 
     @ApiOperation(value = "이력서 수정")
     @PutMapping(value = "/{userId}/{resumeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity updateResume(@PathVariable String userId,@PathVariable Long resumeId,MultipartFile profile,
+    public ResponseEntity updateResume(@PathVariable String userId,@PathVariable Long resumeId,MultipartFile[] files,
                               ResumeRequest resumeRequest) throws IOException {
 
-        if (resumeRequest.getFile().size()==1){
-            String url=s3Service.uploadFile(resumeRequest.getFile().get(0));
-            resumeRequest.setPortfolioUrl(url.toString());
-        }
-        else {
-            List<String> url = s3Service.uploadFiles(resumeRequest.getFile());
-            resumeRequest.setPortfolioUrl(url.toString());
-        }
-        String filename=s3Service.uploadFile(profile);
-
-        resumeRequest.setProfileImgUrl(filename);
-
-        resumeService.updateResume(userId, resumeId, resumeRequest,profile);
+        resumeService.updateResume(userId, resumeId, resumeRequest,files);
         return new ResponseEntity(new ApiRes("이력서 수정 성공", HttpStatus.OK), HttpStatus.OK);
 
     }

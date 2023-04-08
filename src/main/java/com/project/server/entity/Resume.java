@@ -7,44 +7,37 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
+
 @Data
 @ToString(exclude = "user")
 
 public class Resume extends BaseTime{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //UUID로 해야하나? -> 하는 걸로
+    private Long id;
 
     @Column
-    private String major;
+    private String title; //이력서 제목
 
     @Column
-    private String career;
+    private String certificate; //자격증
+    @Column
+    private String career; //경력
 
     @Column
-    private String school;
-
-    @Column
-    private String award;
-
-    @Column
-    private String profileImgUrl;
-
-    @Column
-    private String area;
-
+    private String school; //학력
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String contents;
+    private String job; //희망 직무
 
-    //@ElementCollection
     @Column
-    private String portfolioUrl;
+    private String link; //링크
 
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Photo> photoList = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_sn")
     @JsonBackReference
@@ -53,18 +46,34 @@ public class Resume extends BaseTime{
     public void createdByUser(User user) {
         this.user = user; //like setter
     }
+    @Builder
+    public Resume(String title, String certificate, String career, String school, String job,String link,User user, List<Photo> photoList) {
+        this.title = title;
+        this.certificate=certificate;
+        this.career=career;
+        this.school=school;
+        this.job=job;
+        this.link=link;
+        this.user=user;
+        this.photoList = photoList != null ? photoList : new ArrayList<>();
 
-
+    }
     // 업데이트 메소드
     public void update(ResumeRequest request) {
-        this.major = request.getMajor();
+        this.title = request.getTitle();
+        this.certificate = request.getCertificate();
         this.career = request.getCareer();
         this.school=request.getSchool();
-        this.award=request.getAward();
-        this.profileImgUrl=request.getProfileImgUrl();
-        this.area=request.getArea();
-        this.contents=request.getContents();
-        this.portfolioUrl=request.getPortfolioUrl();
+        this.job=request.getJob();
+        this.link=request.getLink();
     }
+
+
+    public void writePhoto(Photo photo){
+        photoList.add(photo);
+        photo.setResume(this);
+
+    }
+
 
 }
