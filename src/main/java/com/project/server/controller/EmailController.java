@@ -38,9 +38,9 @@ public class EmailController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
-    @GetMapping("/confirm")
-    public ResponseEntity confirm(@RequestParam("token") String token) {
-        ApiRes apiRes = mailService.confirm(token);
+    @PostMapping("/confirm")
+    public ResponseEntity confirm(@RequestParam("number") Integer number) {
+        ApiRes apiRes = mailService.confirm(number);
         return new ResponseEntity(apiRes, apiRes.getStatus());
     }
 

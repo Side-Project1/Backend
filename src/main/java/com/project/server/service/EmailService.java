@@ -39,19 +39,23 @@ public class EmailService {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(emailMessage.getReceiver());
             mimeMessageHelper.setSubject("이메일 인증");
-            /**
-             * html 템플릿으로 보낼거면 true
-             * plaintext로 보낼거면 false
-             */
 
+            java.util.Random generator = new java.util.Random();
+            generator.setSeed(System.currentTimeMillis());
 
             ConfirmMail confirmMail = ConfirmMail.builder()
                     .expirationDate(LocalDateTime.now().plusMinutes(3L)) // 3분
                     .expired(false)
                     .email(emailMessage.getReceiver())
+                    .number(generator.nextInt(1000000) % 1000000)
                     .build();
             confirmMailRepository.save(confirmMail);
-            mimeMessageHelper.setText(confirmMail.getId().toString(), true);
+
+            /**
+             * html 템플릿으로 보낼거면 true
+             * plaintext로 보낼거면 false
+             */
+            mimeMessageHelper.setText(confirmMail.getNumber().toString(), true);
 
             javaMailSender.send(mimeMessage);
 //            log.info("sent email: {}", emailMessage.getMessage());
@@ -63,9 +67,9 @@ public class EmailService {
     }
 
 
-    public ApiRes confirm(String token) {
+    public ApiRes confirm(Integer number) {
         try{
-            confirmMailRepository.findByIdAndExpirationDateAfterAndExpired(UUID.fromString(token), LocalDateTime.now(), false).orElseThrow(() -> new Exception());
+            confirmMailRepository.findByNumberAndExpirationDateAfterAndExpired(number, LocalDateTime.now(), false).orElseThrow(() -> new Exception());
             return new ApiRes("인증 완료", HttpStatus.OK);
         } catch (Exception e) {
             log.error("error {}", e.getMessage());

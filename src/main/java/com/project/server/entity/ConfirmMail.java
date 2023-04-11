@@ -28,4 +28,7 @@ public class ConfirmMail extends BaseTime{
 
     @Column
     private String email;
+
+    @Column(unique = true)
+    private Integer number;
 }
