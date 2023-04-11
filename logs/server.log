@@ -9508,3 +9508,7 @@ Caused by: java.sql.SQLSyntaxErrorException: Table 'server.study_member' doesn't
 [2023-04-11 22:30:46.551] [INFO ] [http-nio-8080-exec-1] [o.s.w.s.DispatcherServlet     ]   Initializing Servlet 'dispatcherServlet'
 [2023-04-11 22:30:46.554] [INFO ] [http-nio-8080-exec-1] [o.s.w.s.DispatcherServlet     ]   Completed initialization in 3 ms
 [2023-04-11 22:30:48.280] [INFO ] [http-nio-8080-exec-2] [c.p.s.s.TokenProvider         ]   refresh Token : eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODEyMTk4NDcsImV4cCI6MTY4MTgyNDY0N30.UIEHB-aRPNnQ3XEvwrDmzPymvkk4H30WaEKJ_eLSfSaSWMKFoNY0M1cmxUM1WfZsdYKCaCfhgVMGUaNAvgMtJQ 
+[2023-04-11 22:30:55.694] [INFO ] [SpringApplicationShutdownHook] [o.s.o.j.LocalContainerEntityManagerFactoryBean] Closing JPA EntityManagerFactory for persistence unit 'default'
+[2023-04-11 22:30:55.698] [INFO ] [SpringApplicationShutdownHook] [o.h.t.s.i.SchemaDropperImpl$DelayedDropActionImpl] HHH000477: Starting delayed evictData of schema as part of SessionFactory shut-down'
+[2023-04-11 22:30:59.120] [INFO ] [SpringApplicationShutdownHook] [c.z.h.HikariDataSource        ] HikariPool-1 - Shutdown initiated...
+[2023-04-11 22:30:59.144] [INFO ] [SpringApplicationShutdownHook] [c.z.h.HikariDataSource        ] HikariPool-1 - Shutdown completed.
