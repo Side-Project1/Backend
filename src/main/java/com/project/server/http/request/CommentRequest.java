@@ -15,7 +15,10 @@ import lombok.Setter;
 public class CommentRequest {
     @Schema(description = "댓글" , example = "댓글남겨요~")
     private String comments;
+    @Schema(description = "홍보 게시글 일련번호" , example = "1")
     private Long promotionId;
+    @Schema(description = "부모 댓글 일련번호" , example = "1")
     private Long commentId;
+    @Schema(description = "비밀 댓글인가" , example = "1")
     private EnumStatus.Status isPrivated;
 }

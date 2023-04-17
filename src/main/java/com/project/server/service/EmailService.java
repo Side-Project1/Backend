@@ -1,10 +1,8 @@
 package com.project.server.service;
 
 import com.project.server.entity.ConfirmMail;
-import com.project.server.entity.User;
-import com.project.server.exception.ResourceNotFoundException;
+import com.project.server.http.request.EmailConfirmRequest;
 import com.project.server.http.request.EmailRequest;
-import com.project.server.http.request.FindPwRequest;
 import com.project.server.http.response.ApiRes;
 import com.project.server.repository.ConfirmMailRepository;
 import com.project.server.repository.UserRepository;
@@ -19,7 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -40,14 +38,14 @@ public class EmailService {
             mimeMessageHelper.setTo(emailMessage.getReceiver());
             mimeMessageHelper.setSubject("이메일 인증");
 
-            java.util.Random generator = new java.util.Random();
+            Random generator = new Random();
             generator.setSeed(System.currentTimeMillis());
 
             ConfirmMail confirmMail = ConfirmMail.builder()
                     .expirationDate(LocalDateTime.now().plusMinutes(3L)) // 3분
                     .expired(false)
                     .email(emailMessage.getReceiver())
-                    .number(generator.nextInt(1000000) % 1000000)
+                    .number(generator.nextInt(900000) + 100000) // 0 ~ 899,999 사이의 정수를 생성한 뒤 1000000을 더하여 6자리 난수 생성
                     .build();
             confirmMailRepository.save(confirmMail);
 
@@ -67,9 +65,9 @@ public class EmailService {
     }
 
 
-    public ApiRes confirm(Integer number) {
+    public ApiRes confirm(EmailConfirmRequest rq) {
         try{
-            confirmMailRepository.findByNumberAndExpirationDateAfterAndExpired(number, LocalDateTime.now(), false).orElseThrow(() -> new Exception());
+            confirmMailRepository.findByNumberAndEmailAndExpirationDateAfterAndExpired(rq.getNumber(), rq.getReceiver(), LocalDateTime.now(), false).orElseThrow(() -> new Exception());
             return new ApiRes("인증 완료", HttpStatus.OK);
         } catch (Exception e) {
             log.error("error {}", e.getMessage());

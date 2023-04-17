@@ -6,6 +6,7 @@ import com.project.server.http.request.JobOfferRequest;
 import com.project.server.service.JobOfferService;
 import com.project.server.util.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,7 +48,7 @@ public class JobOfferController {
     @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("")
     public ResponseEntity getJobOfferList(@PageableDefault Pageable pageable, @RequestBody JobOfferPageRequest jobOfferPageRequest,
-                                          @RequestParam(name = "category", required = false) String category){
+                                          @Parameter(description = "구인글 카테고리") @RequestParam(name = "category", required = false) String category){
         return jobOfferService.getJobOfferList(pageable, jobOfferPageRequest, category);
     }
 
@@ -60,7 +61,7 @@ public class JobOfferController {
     })
     @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("{jobOfferSn}")
-    public ResponseEntity getJobOffer(@PathVariable("jobOfferSn") Integer id){
+    public ResponseEntity getJobOffer(@Parameter(description = "구인글 일련번호") @PathVariable("jobOfferSn") Integer id){
         return jobOfferService.getJobOffer(id);
     }
 
@@ -73,7 +74,8 @@ public class JobOfferController {
     })
     @PreAuthorize("hasAnyRole('USER')")
     @PutMapping("/{jobOfferSn}")
-    public ResponseEntity updateJobOffer(@ApiIgnore @AuthUser User user, @PathVariable("jobOfferSn") Integer id,
+    public ResponseEntity updateJobOffer(@ApiIgnore @AuthUser User user,
+                                         @Parameter(description = "구인글 일련번호") @PathVariable("jobOfferSn") Integer id,
                                          @RequestBody JobOfferRequest jobOfferRequest) {
         return jobOfferService.updateJobOffer(user, id, jobOfferRequest);
     }
@@ -87,7 +89,7 @@ public class JobOfferController {
     })
     @PreAuthorize("hasAnyRole('USER')")
     @PutMapping("/dead/{jobOfferSn}")
-    public ResponseEntity deadLineCheck(@ApiIgnore @AuthUser User user, @PathVariable("jobOfferSn") Integer id) {
+    public ResponseEntity deadLineCheck(@ApiIgnore @AuthUser User user, @Parameter(description = "구인글 일련번호") @PathVariable("jobOfferSn") Integer id) {
         return jobOfferService.deadLineCheck(user, id);
     }
 
@@ -100,7 +102,7 @@ public class JobOfferController {
     })
     @PreAuthorize("hasAnyRole('USER')")
     @DeleteMapping("/{jobOfferSn}")
-    public ResponseEntity deleteJobOffer(@ApiIgnore @AuthUser User user, @PathVariable("jobOfferSn") Integer id) {
+    public ResponseEntity deleteJobOffer(@ApiIgnore @AuthUser User user, @Parameter(description = "구인글 일련번호") @PathVariable("jobOfferSn") Integer id) {
         return jobOfferService.deleteJobOffer(user, id);
     }
 }

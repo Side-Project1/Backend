@@ -3,7 +3,6 @@ package com.project.server.controller;
 import com.project.server.http.response.ApiRes;
 import com.project.server.http.request.LoginRequest;
 import com.project.server.http.request.SignUpRequest;
-import com.project.server.repository.UserRepository;
 import com.project.server.security.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

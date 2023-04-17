@@ -10,5 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface ConfirmMailRepository extends JpaRepository<ConfirmMail, UUID> {
-    Optional<ConfirmMail> findByNumberAndExpirationDateAfterAndExpired(Integer number, LocalDateTime now, boolean expired);
+    Optional<ConfirmMail> findByNumberAndEmailAndExpirationDateAfterAndExpired(Integer number, String receiver, LocalDateTime now, boolean expired);
 }
