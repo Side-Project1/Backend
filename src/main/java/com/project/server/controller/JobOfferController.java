@@ -60,7 +60,7 @@ public class JobOfferController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
     @PreAuthorize("hasAnyRole('USER')")
-    @GetMapping("{jobOfferSn}")
+    @GetMapping("/{jobOfferSn}")
     public ResponseEntity getJobOffer(@Parameter(description = "구인글 일련번호") @PathVariable("jobOfferSn") Integer id){
         return jobOfferService.getJobOffer(id);
     }
