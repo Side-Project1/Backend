@@ -35,6 +35,12 @@ public class CommentController {
     }
 
     @PreAuthorize("hasAnyRole('USER')")
+    @GetMapping("/{studyId}")
+    public ResponseEntity getStudyComment(@ApiIgnore @AuthUser User user, @PageableDefault Pageable pageable, @PathVariable("studyId") Long promotionId) {
+        return commentService.getComment(user, pageable, promotionId);
+    }
+
+    @PreAuthorize("hasAnyRole('USER')")
     @DeleteMapping("/{commentId}")
     public ResponseEntity deleteComment(@ApiIgnore @AuthUser User user, @PathVariable("commentId") Long commentId) {
         return commentService.deleteComment(user, commentId);

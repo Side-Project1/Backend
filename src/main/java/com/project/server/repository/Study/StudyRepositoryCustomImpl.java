@@ -42,12 +42,6 @@ public class StudyRepositoryCustomImpl extends QuerydslRepositorySupport impleme
         return study.title.eq(title);
     }
 
-//    private BooleanExpression containName(String name) {
-//        if(name == null || name.isEmpty()) {
-//            return null;
-//        }
-//        return study.name.containsIgnoreCase(name);
-//    }
 
     private BooleanExpression eqContents(String contents) {
         if(contents == null || contents.isEmpty()) {

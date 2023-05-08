@@ -1,12 +1,14 @@
 package com.project.server.controller;
 
 import com.project.server.entity.Study;
+import com.project.server.entity.User;
 import com.project.server.exception.ResourceNotFoundException;
 import com.project.server.http.request.StudyApplyRequest;
 import com.project.server.http.request.StudyRequest;
 import com.project.server.http.response.ApiRes;
 import com.project.server.repository.StudyRepository;
 import com.project.server.repository.UserRepository;
+import com.project.server.security.CustomUserPrincipal;
 import com.project.server.service.StudyService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,10 +21,13 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Tag(name="Study", description = "스터디 API")
 @RequiredArgsConstructor
@@ -42,15 +47,12 @@ public class StudyController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
-
-
     @ApiOperation(value = "전체 스터디 조회")
     @GetMapping("/all")
     public ResponseEntity findAll(@PageableDefault Pageable pageable,
                                   @RequestParam(required = false) String title,
                                   @RequestParam(required = false) String contents) {
         Page<Study> studyList = studyService.getStudyList(pageable, title, contents);
-
 
         log.debug("총 element 수 : {}, 전체 page 수 : {}, 페이지에 표시할 element 수 : {}, 현재 페이지 index : {}, 현재 페이지의 element 수 : {}",
                 studyList.getTotalElements(), studyList.getTotalPages(), studyList.getSize(),
@@ -60,21 +62,19 @@ public class StudyController {
     }
 
     @ApiOperation(value = "스터디 상제 조회")
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/{studyId}")
-    public ResponseEntity findById(@PathVariable("studyId") Long studyId) {
+    public ResponseEntity findById(@PathVariable("studyId") Long studyId, Authentication authentication) {
+        CustomUserPrincipal userDetails = (CustomUserPrincipal) authentication.getPrincipal();
+        Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
 
-        studyService.findById(studyId);
+
+        System.out.println("userinfo" + user.get().getUserName());
+        studyService.findById(studyId, user.get().getUserName());
+
         return new ResponseEntity(new ApiRes("스터디 상세 보기 성공", HttpStatus.OK), HttpStatus.OK);
     }
 
-
-//    @ApiOperation(value = "스터디 카테고리 별 조회")
-//    @GetMapping("/category/{category}")
-//    public ResponseEntity findByCategory(@PathVariable StudyCategory category) {
-//        studyService.findByCategory(category);
-//        return new ResponseEntity(new ApiRes("스터디 카테고리 보기 성공", HttpStatus.OK), HttpStatus.OK);
-//
-//    }
 
     @ApiOperation(value = "사용자가 쓴 스터디 글 조회")
     @GetMapping("/user/{userId}")
@@ -87,7 +87,8 @@ public class StudyController {
     @ApiOperation(value = "스터디 글 등록")
     @PostMapping(value = "/{userId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity writeStudy(@PathVariable("userId") String userId,
-                                     StudyRequest studyRequest, MultipartFile[] files) throws IOException {
+                                     StudyRequest studyRequest, @RequestBody(required = false) MultipartFile[] files) throws IOException {
+
         studyService.writeStudy(userId, studyRequest,files);
         return new ResponseEntity(new ApiRes("스터디 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
     }
@@ -95,10 +96,9 @@ public class StudyController {
     @ApiOperation(value = "사용자가 쓴 스터디 글 수정")
     @PutMapping(value = "/{userId}/{studyId}/write",consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
     public ResponseEntity updateStudy(@PathVariable String userId, @PathVariable Long studyId,
-                                     StudyRequest studyRequest, MultipartFile[] files) throws IOException {
+                                     StudyRequest studyRequest, @RequestParam (required = false) MultipartFile[] files) throws IOException {
         studyService.updateStudy(userId, studyId, studyRequest,files);
         return new ResponseEntity(new ApiRes("스터디 수정 성공", HttpStatus.OK), HttpStatus.OK);
-
     }
 
     @ApiOperation(value = "사용자가 쓴 스터디 글 삭제")
@@ -125,9 +125,7 @@ public class StudyController {
                 .orElseThrow(() -> new ResourceNotFoundException("Study", "id", studyId));
        studyService.approveStudyApply(studyId, userId);
         return new ResponseEntity(new ApiRes("스터디 멤버 승인", HttpStatus.OK), HttpStatus.OK);
-
     }
-
 }
 
 

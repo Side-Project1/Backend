@@ -11,8 +11,6 @@ import lombok.Setter;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class StudyRequest {
     private String title; //제목
-    private String author;
-
     private int max; //인원 수
 
     private String region; //지역

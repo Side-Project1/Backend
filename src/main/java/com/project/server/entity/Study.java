@@ -2,10 +2,8 @@ package com.project.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.project.server.http.request.StudyRequest;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,10 +12,10 @@ import java.util.UUID;
 
 
 @Entity
-
 @AllArgsConstructor
-@Data
 @NoArgsConstructor
+@Getter
+@Setter
 public class Study extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +34,7 @@ public class Study extends BaseTime {
     private String contents; // 자유 양식
 
     @Column(name="VIEW_COUNT")
-    private int viewCount; //조회수
+    private Long viewCount; //조회수
 
     @Column
     private String owner;
@@ -57,25 +55,12 @@ public class Study extends BaseTime {
     @JsonManagedReference
     @JoinColumn(name="user_sn")
     private User user;
-
-//    @Enumerated(EnumType.STRING)
-//    private StudyCategory category; //카테고리
-
     public void createdByUser(User user) {
         this.user = user; //like setter
     }
 
-
-    public void update(String title, int max, String region, String contents) {
-        this.title=title;
-        this.max=max;
-        this.region=region;
-        this.contents=contents;
-
-    }
-
     @Builder
-    public Study(String title, String author,int max, String region, String contents,User user, String owner,List<Photo> studyPhotoList) {
+    public Study(String title, String author,int max, String region, String contents,User user,Long viewCount, String owner,List<Photo> studyPhotoList) {
         this.title = title;
         this.author=author;
         this.max=max;
@@ -83,9 +68,11 @@ public class Study extends BaseTime {
         this.contents=contents;
         this.user=user;
         this.owner=owner;
+        this.viewCount=viewCount;
         this.studyPhotoList = studyPhotoList != null ? studyPhotoList : new ArrayList<>();
 
     }
+
 
     public void writePhoto(Photo photo){
         studyPhotoList.add(photo);

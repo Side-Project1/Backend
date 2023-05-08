@@ -1,5 +1,6 @@
 package com.project.server.controller;
 
+import com.project.server.entity.Link;
 import com.project.server.entity.Resume;
 import com.project.server.http.request.ResumeRequest;
 import com.project.server.http.response.ApiRes;
@@ -41,13 +42,12 @@ public class ResumeController {
         for(Resume resume : all){
             ResumeRequest build = ResumeRequest.builder()
                     .title(resume.getTitle())
+                    .profileUrl(resume.getProfileUrl())
                     .certificate(resume.getCertificate())
                     .career(resume.getCareer())
                     .school(resume.getSchool())
                     .job(resume.getJob())
-                    .link(resume.getLink())
                     .build();
-
             allPost.add(build);
         }
 
@@ -73,26 +73,11 @@ public class ResumeController {
 
     @ApiOperation(value = "AWS S3 이미지 업로드 및 이력서 등록")
     @PostMapping(value="/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity writeResume(@PathVariable String userId,  ResumeRequest resumeRequest,MultipartFile[] files )  throws IOException {
-
-//        for (MultipartFile file : files){
-//            String fileName=file.getOriginalFilename();
-//            String fileUrl= s3Service.uploadFile(file);
-//            long fileSize=file.getSize();
-//
-//        }
-//        if (resumeRequest.getFile()){
-//            String portfoliourl=s3Service.uploadFile(resumeRequest.getFile().get(0));
-//            resumeRequest.setPortfolioUrl(portfoliourl.toString());
-//
-//        }
-//        String profileurl=s3Service.uploadFile(profile);
-//        resumeRequest.setProfileImgUrl(profileurl);
-
-        resumeService.writeResume(userId,resumeRequest, files);
+    public ResponseEntity writeResume(@PathVariable String userId,  ResumeRequest resumeRequest, MultipartFile profile, MultipartFile[] files)  throws IOException {
+        System.out.println("file");
+        resumeService.writeResume(userId,resumeRequest, profile,files);
         return new ResponseEntity(new ApiRes("이력서 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
     }
-
 
     @ApiOperation(value = "이력서 수정")
     @PutMapping(value = "/{userId}/{resumeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

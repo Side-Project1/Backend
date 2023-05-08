@@ -2,6 +2,7 @@ package com.project.server.http.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.project.server.entity.Link;
 import com.project.server.entity.Photo;
 import com.project.server.entity.Resume;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ResumeRequest {
     private String title;
 
+    private String profileUrl;
     private String certificate;
 
     private String career;
@@ -28,6 +30,6 @@ public class ResumeRequest {
 
     private String job;
 
-    private String link;
+    private List<String> links;
 
 }
