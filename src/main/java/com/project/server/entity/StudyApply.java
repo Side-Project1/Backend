@@ -1,6 +1,6 @@
 package com.project.server.entity;
 
-import com.project.server.repository.Study.StudyApplyRepository;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,10 +24,12 @@ public class StudyApply {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="study_id")
+    @JsonIgnore
     private Study study;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
-    private User user;
+    @JoinColumn(name="user_sn")
+    @JsonIgnore
+    private Users users;
 
 }

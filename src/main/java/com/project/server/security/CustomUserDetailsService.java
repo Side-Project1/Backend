@@ -1,9 +1,9 @@
 package com.project.server.security;
 
 
-import com.project.server.entity.User;
+import com.project.server.entity.Users;
 import com.project.server.exception.ResourceNotFoundException;
-import com.project.server.repository.UserRepository;
+import com.project.server.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,26 +17,26 @@ import java.util.UUID;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String userId)
             throws UsernameNotFoundException {
-        User user = userRepository.findByUserId(userId)
+        Users users = usersRepository.findByUserId(userId)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with userId : " + userId)
         );
 
-        return CustomUserPrincipal.create(user);
+        return CustomUserPrincipal.create(users);
     }
 
     @Transactional
     public UserDetails loadUserById(UUID uuid) {
-        User user = userRepository.findById(uuid).orElseThrow(
+        Users users = usersRepository.findById(uuid).orElseThrow(
             () -> new ResourceNotFoundException("User", "id", uuid)
         );
 
-        return CustomUserPrincipal.create(user);
+        return CustomUserPrincipal.create(users);
     }
 }

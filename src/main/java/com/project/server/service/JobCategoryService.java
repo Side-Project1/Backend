@@ -35,7 +35,6 @@ public class JobCategoryService {
 
     public ResponseEntity getSubCategory(String parentCategory) {
         try {
-            System.out.println(parentCategory);
             List<JobCategory> jobCategory = jobCategoryRepository.findByParentCategory(parentCategory);
             return new ResponseEntity(new ApiRes("카테고리 조회 성공", HttpStatus.OK, jobCategory), HttpStatus.OK);
         } catch (Exception e) {

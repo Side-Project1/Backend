@@ -1,7 +1,7 @@
 package com.project.server.controller;
 
 
-import com.project.server.entity.User;
+import com.project.server.entity.Users;
 import com.project.server.service.UserService;
 import com.project.server.util.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,8 +34,8 @@ public class UserController {
     })
     @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/me")
-    public ResponseEntity getCurrentUser(@ApiIgnore @AuthUser User user) {
-        return new ResponseEntity(userService.getUserInfo(user), HttpStatus.OK);
+    public ResponseEntity getCurrentUser(@ApiIgnore @AuthUser Users users) {
+        return new ResponseEntity(userService.getUserInfo(users), HttpStatus.OK);
     }
 
 }

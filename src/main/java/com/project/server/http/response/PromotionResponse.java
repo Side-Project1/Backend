@@ -3,16 +3,13 @@ package com.project.server.http.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.project.server.entity.Comment;
 import com.project.server.entity.JobCategory;
 import com.project.server.entity.Promotions;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Getter
@@ -51,7 +48,7 @@ public class PromotionResponse {
     public PromotionResponse(Promotions promotions) {
         this.title = promotions.getTitle();
         this.contents = promotions.getContents();
-        this.writer = promotions.getUser().getUserId();
+        this.writer = promotions.getUsers().getUserId();
         this.jobCategoryList = promotions.getJobCategoryList();
         this.createdDate = promotions.getCreatedDate();
         this.updateDate = promotions.getUpdatedDate();

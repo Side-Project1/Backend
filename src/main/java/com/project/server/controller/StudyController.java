@@ -1,33 +1,36 @@
 package com.project.server.controller;
 
 import com.project.server.entity.Study;
-import com.project.server.entity.User;
+import com.project.server.entity.Users;
 import com.project.server.exception.ResourceNotFoundException;
 import com.project.server.http.request.StudyApplyRequest;
+import com.project.server.http.request.StudyPageRequest;
 import com.project.server.http.request.StudyRequest;
 import com.project.server.http.response.ApiRes;
-import com.project.server.repository.StudyRepository;
-import com.project.server.repository.UserRepository;
-import com.project.server.security.CustomUserPrincipal;
+import com.project.server.http.response.StudyResponse;
+import com.project.server.repository.Study.StudyRepository;
 import com.project.server.service.StudyService;
+import com.project.server.util.AuthUser;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
 
 @Tag(name="Study", description = "스터디 API")
 @RequiredArgsConstructor
@@ -38,92 +41,132 @@ public class StudyController {
     private final StudyRepository studyRepository;
     private final StudyService studyService;
 
-    private final UserRepository userRepository;
 
-
+    @Operation(tags = "Study", summary = "스터디 목록 조회")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK !!"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
+            @ApiResponse(responseCode = "200", description = "OK !!"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
-    @ApiOperation(value = "전체 스터디 조회")
-    @GetMapping("/all")
-    public ResponseEntity findAll(@PageableDefault Pageable pageable,
-                                  @RequestParam(required = false) String title,
-                                  @RequestParam(required = false) String contents) {
-        Page<Study> studyList = studyService.getStudyList(pageable, title, contents);
+    @PreAuthorize("hasAnyRole('USER')")
+    @GetMapping("")
+    public ResponseEntity getStudyList(@PageableDefault Pageable pageable, @RequestBody(required = false) StudyPageRequest studyPageRequest) {
+        return studyService.getStudyList(pageable, studyPageRequest);
 
-        log.debug("총 element 수 : {}, 전체 page 수 : {}, 페이지에 표시할 element 수 : {}, 현재 페이지 index : {}, 현재 페이지의 element 수 : {}",
-                studyList.getTotalElements(), studyList.getTotalPages(), studyList.getSize(),
-                studyList.getNumber(), studyList.getNumberOfElements());
-
-        return new ResponseEntity(new ApiRes("스터디 조회 성공", HttpStatus.OK), HttpStatus.OK);
     }
 
+    @Operation(tags = "Study", summary = "스터디 상세 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK !!"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
+    })
     @ApiOperation(value = "스터디 상제 조회")
     @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/{studyId}")
-    public ResponseEntity findById(@PathVariable("studyId") Long studyId, Authentication authentication) {
-        CustomUserPrincipal userDetails = (CustomUserPrincipal) authentication.getPrincipal();
-        Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
+    public ResponseEntity findById(@ApiIgnore @AuthUser Users users, @Parameter(description = "스터디 게시글 일련번호")@PathVariable("studyId") Long studyId) {
 
+        return studyService.findById(users,studyId);
 
-        System.out.println("userinfo" + user.get().getUserName());
-        studyService.findById(studyId, user.get().getUserName());
-
-        return new ResponseEntity(new ApiRes("스터디 상세 보기 성공", HttpStatus.OK), HttpStatus.OK);
+//        return new ResponseEntity(new ApiRes("스터디 상세 보기 성공", HttpStatus.OK,cnt), HttpStatus.OK);
     }
 
+    @Operation(tags = "Study", summary = "스터디 마감 변경")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK !!"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
+    })
+    @ApiOperation(value = "스터디 마감 변경")
+    @PreAuthorize("hasAnyRole('USER')")
+    @PostMapping("/{studyId}/dead")
+    public ResponseEntity dead(@ApiIgnore @AuthUser Users users,@Parameter(description = "스터디 게시글 일련번호")@PathVariable("studyId") Long studyId) {
 
-    @ApiOperation(value = "사용자가 쓴 스터디 글 조회")
-    @GetMapping("/user/{userId}")
-    public ResponseEntity findByUserId(@PathVariable String userId) {
-        studyService.findByUser(userId);
-        return new ResponseEntity(new ApiRes("사용자가 작성한 스터디 보기 성공", HttpStatus.OK), HttpStatus.OK);
+        return studyService.dead(users,studyId);
 
     }
 
-    @ApiOperation(value = "스터디 글 등록")
-    @PostMapping(value = "/{userId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity writeStudy(@PathVariable("userId") String userId,
-                                     StudyRequest studyRequest, @RequestBody(required = false) MultipartFile[] files) throws IOException {
+    @Operation(tags = "Study", summary = "스터디 등록")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK !!"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
+    })
+    @PreAuthorize("hasAnyRole('USER')")
+    @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity writeStudy(@ApiIgnore @AuthUser Users users,
+                                      StudyRequest studyRequest, @RequestParam(name="sub_category") List<Long> sub_category,@RequestBody(required = false) MultipartFile[] files ) throws IOException {
 
-        studyService.writeStudy(userId, studyRequest,files);
-        return new ResponseEntity(new ApiRes("스터디 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
+            return studyService.writeStudy(users, studyRequest,sub_category,files);
+            //return new ResponseEntity(new ApiRes("스터디 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
     }
 
+    @Operation(tags = "study", summary = "스터디 게시글 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK !!"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
+    })
+    @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(value = "사용자가 쓴 스터디 글 수정")
-    @PutMapping(value = "/{userId}/{studyId}/write",consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
-    public ResponseEntity updateStudy(@PathVariable String userId, @PathVariable Long studyId,
-                                     StudyRequest studyRequest, @RequestParam (required = false) MultipartFile[] files) throws IOException {
-        studyService.updateStudy(userId, studyId, studyRequest,files);
-        return new ResponseEntity(new ApiRes("스터디 수정 성공", HttpStatus.OK), HttpStatus.OK);
+    @PutMapping(value = "/{studyId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
+    public ResponseEntity updateStudy(@ApiIgnore @AuthUser Users users, @PathVariable Long studyId,
+                                      StudyRequest studyRequest, @RequestParam(name="sub_category") List<Long> sub_category,@RequestParam (required = false) MultipartFile[] files) throws IOException {
+        return studyService.updateStudy(users, studyId, sub_category,studyRequest,files);
+        //return new ResponseEntity(new ApiRes("스터디 수정 성공", HttpStatus.OK), HttpStatus.OK);
     }
 
+    @Operation(tags = "study", summary = "스터디 게시글 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK !!"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
+    })
+    @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(value = "사용자가 쓴 스터디 글 삭제")
-    @DeleteMapping("/{userId}/{studyId}/delete")
-    public ResponseEntity deleteStudyById(@PathVariable String userId, @PathVariable Long studyId) {
-        studyService.deleteStudyById(userId, studyId);
+    @DeleteMapping("/{studyId}/delete")
+    public ResponseEntity deleteStudyById(@ApiIgnore @AuthUser Users users, @Parameter(description = "스터디 게시글 일련번호") @PathVariable Long studyId) {
+        studyService.deleteStudyById(users, studyId);
         return new ResponseEntity(new ApiRes("스터디 삭제 성공", HttpStatus.OK), HttpStatus.OK);
 
     }
 
-
-    @PostMapping("/studies/{studyId}/{userId}/members")
-    public ResponseEntity addStudyMembers(@PathVariable Long studyId, @PathVariable String userId, @RequestBody StudyApplyRequest studyApplyRequest) {
+    @Operation(tags = "study", summary = "스터디 멤버 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK !!"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
+    })
+    @PreAuthorize("hasAnyRole('USER')")
+    @PostMapping("/studies/{studyId}/members")
+    public ResponseEntity addStudyMembers(@PathVariable Long studyId, @ApiIgnore @AuthUser Users users, @RequestBody StudyApplyRequest studyApplyRequest) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Study", "id", studyId));
-        String res = studyService.addStudyMembers(studyId, userId, studyApplyRequest);
+        String res = studyService.addStudyMembers(studyId, users, studyApplyRequest);
         return new ResponseEntity(new ApiRes("스터디 멤버 등록 성공", HttpStatus.OK, res), HttpStatus.OK);
 
     }
 
-    @PostMapping("/studies/{studyId}/{userId}/apply")
-    public ResponseEntity approveStudyApply(@PathVariable Long studyId, @PathVariable String userId) {
+    @Operation(tags = "study", summary = "스터디 멤버 승인")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK !!"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
+    })
+    @PreAuthorize("hasAnyRole('USER')")
+    @PostMapping("/studies/{studyId}/{approve}/apply")
+    public ResponseEntity approveStudyApply(@PathVariable Long studyId,@ApiIgnore @AuthUser Users users, @PathVariable (name="approve") String approve) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Study", "id", studyId));
-       studyService.approveStudyApply(studyId, userId);
+       studyService.approveStudyApply(studyId, users,approve);
         return new ResponseEntity(new ApiRes("스터디 멤버 승인", HttpStatus.OK), HttpStatus.OK);
     }
 }

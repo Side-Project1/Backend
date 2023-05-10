@@ -8,8 +8,7 @@ import java.util.Optional;
 
 
 public interface PhotoRepository extends JpaRepository <Photo,Long> {
-    List<Photo> findByResumeId(Long ResumeId);
+
     List<Photo> findByStudyId(Long StudyId);
-    Optional<Photo> deleteByResumeId(Long ResumeId);
     Optional<Photo> deleteByStudyId(Long StudyId);
 }

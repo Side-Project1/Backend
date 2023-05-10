@@ -24,7 +24,7 @@ public class Promotions extends BaseTime{
     private String contents;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_sn")
-    private User user;
+    private Users users;
     @OneToMany(mappedBy = "promotions", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Comment> commentList = new ArrayList<>();

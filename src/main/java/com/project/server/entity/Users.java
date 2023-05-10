@@ -5,9 +5,7 @@ import com.project.server.security.AuthProvider;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Builder
@@ -15,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class User extends BaseTime {
+public class Users extends BaseTime {
     @Id
     @GeneratedValue
     @Column(name = "user_sn", columnDefinition = "BINARY(16)")
@@ -47,42 +45,51 @@ public class User extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<StudyComment> studycommentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default
     private List<Promotions> promotionsList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference
-    private List<Resume> resumes=new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference //순환참조 방지
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonBackReference
+    @Builder.Default
     private List<Study> studies =new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     @JsonBackReference //순환참조 방지
     private List<StudyMember> members =new ArrayList<>();
 
-//    public void addComment(Comment comment) {
-//        if (comment != null) {
-//            this.comments.add(comment);
-//            comment.setUser(this);
-//        }
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @JsonBackReference //순환참조 방지
+    private List<Scrap> scrapList =new ArrayList<>();
+
+
+
+//    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @JoinTable(name = "user_scrap",
+//            joinColumns = @JoinColumn(name = "user_sn"),
+//            inverseJoinColumns = @JoinColumn(name = "study_id"))
+//    private Set<Study> scraps = new HashSet<>();
+//
+//    public void addScrap(Study study) {
+//        scraps.add(study);
+//        study.getScrappers().add(this);
+//    }
+//
+//    public void removeScrap(Study study) {
+//        scraps.remove(study);
+//        study.getScrappers().remove(this);
 //    }
 
-
-    public void writeStudy(Study study){
-        this.studies.add(study);
-        study.createdByUser(this);
-    }
-
-    public void writeResume(Resume resume){
-        this.resumes.add(resume);
-        resume.createdByUser(this);
-    }
 
 }

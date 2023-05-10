@@ -1,6 +1,6 @@
 package com.project.server.security;
 
-import com.project.server.entity.User;
+import com.project.server.entity.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,35 +14,35 @@ public class CustomUserPrincipal implements OAuth2User, UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
-    private User user;
+    private Users users;
 
-    public User getUser() {
-        return user;
+    public Users getUser() {
+        return users;
     }
 
-    public CustomUserPrincipal(UUID id, String email, String password, Collection<? extends GrantedAuthority> authorities, User user) {
+    public CustomUserPrincipal(UUID id, String email, String password, Collection<? extends GrantedAuthority> authorities, Users users) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
-        this.user = user;
+        this.users = users;
     }
 
-    public static CustomUserPrincipal create(User user) {
+    public static CustomUserPrincipal create(Users users) {
         List<GrantedAuthority> authorities = Collections.
                 singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
         return new CustomUserPrincipal(
-                user.getId(),
-                user.getEmail(),
-                user.getPassword(),
+                users.getId(),
+                users.getEmail(),
+                users.getPassword(),
                 authorities,
-                user
+                users
         );
     }
 
-    public static CustomUserPrincipal create(User user, Map<String, Object> attributes) {
-        CustomUserPrincipal userPrincipal = CustomUserPrincipal.create(user);
+    public static CustomUserPrincipal create(Users users, Map<String, Object> attributes) {
+        CustomUserPrincipal userPrincipal = CustomUserPrincipal.create(users);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
     }

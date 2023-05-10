@@ -1,15 +1,10 @@
 package com.project.server.entity;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.project.server.http.request.StudyRequest;
 import lombok.*;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -33,51 +28,62 @@ public class Study extends BaseTime {
     @Column
     private String contents; // 자유 양식
 
+    @Column(name = "recruitment")
+    @Enumerated(value = EnumType.STRING)
+    private EnumStatus.Status recruitment;
+
     @Column(name="VIEW_COUNT")
     private Long viewCount; //조회수
 
-    @Column
-    private String owner;
 
-    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL ,orphanRemoval = true )
-    @JsonBackReference
+
+    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL ,fetch = FetchType.LAZY,orphanRemoval = true )
     private List<Photo> studyPhotoList =new ArrayList<>();
 
-    @OneToMany(mappedBy = "study",cascade = CascadeType.ALL)
-    @JsonBackReference
+    @OneToMany(mappedBy = "study",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<StudyApply> applyList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "study",cascade = CascadeType.ALL)
-    @JsonBackReference
+    @OneToMany(mappedBy = "study",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<StudyMember> members = new ArrayList<>();
+
+    @OneToMany(mappedBy = "study",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<StudyComment> commentList = new ArrayList<>();
 
     @ManyToOne
     @JsonManagedReference
+    @JsonIgnore
+    @JsonBackReference
     @JoinColumn(name="user_sn")
-    private User user;
-    public void createdByUser(User user) {
-        this.user = user; //like setter
-    }
+    private Users users;
+
+    @ManyToMany
+    @JsonIgnore
+    @JoinTable(
+            name = "STUDY_CATEGORY_TABLE",
+            joinColumns = @JoinColumn(name = "study_id"),
+            inverseJoinColumns = @JoinColumn(name = "job_category_id")
+    )
+    private List<JobCategory> jobCategoryList = new ArrayList<>();
+
 
     @Builder
-    public Study(String title, String author,int max, String region, String contents,User user,Long viewCount, String owner,List<Photo> studyPhotoList) {
+    public Study(String title, String author, int max, String region, String contents,EnumStatus.Status recruitment ,Users users, Long viewCount) {
         this.title = title;
         this.author=author;
         this.max=max;
         this.region=region;
         this.contents=contents;
-        this.user=user;
-        this.owner=owner;
+        this.recruitment=recruitment;
+        this.users = users;
         this.viewCount=viewCount;
-        this.studyPhotoList = studyPhotoList != null ? studyPhotoList : new ArrayList<>();
 
     }
-
 
     public void writePhoto(Photo photo){
         studyPhotoList.add(photo);
         photo.setStudy(this);
 
     }
+
 
 }

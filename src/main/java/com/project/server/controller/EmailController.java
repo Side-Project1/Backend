@@ -1,5 +1,6 @@
 package com.project.server.controller;
 
+import com.project.server.http.request.EmailConfirmRequest;
 import com.project.server.http.request.EmailRequest;
 import com.project.server.http.response.ApiRes;
 import com.project.server.service.EmailService;
@@ -38,9 +39,9 @@ public class EmailController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
-    @GetMapping("/confirm")
-    public ResponseEntity confirm(@RequestParam("token") String token) {
-        ApiRes apiRes = mailService.confirm(token);
+    @PostMapping("/confirm")
+    public ResponseEntity confirm(@RequestBody EmailConfirmRequest emailConfirmRequest) {
+        ApiRes apiRes = mailService.confirm(emailConfirmRequest);
         return new ResponseEntity(apiRes, apiRes.getStatus());
     }
 

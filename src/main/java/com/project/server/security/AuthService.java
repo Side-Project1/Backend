@@ -1,11 +1,11 @@
 package com.project.server.security;
 
 import com.project.server.entity.Role;
-import com.project.server.entity.User;
+import com.project.server.entity.Users;
 import com.project.server.http.request.LoginRequest;
 import com.project.server.http.request.SignUpRequest;
 import com.project.server.http.response.ApiRes;
-import com.project.server.repository.UserRepository;
+import com.project.server.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 public class AuthService {
     private final String pattern = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&])[A-Za-z[0-9]$@$!%*#?&]{8,20}$"; // 영문, 숫자, 특수문자 , 8~20자리
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private final UsersRepository userRepository;
     private final TokenProvider tokenProvider;
 
     public ResponseEntity signUp(SignUpRequest signUpRequest) {
@@ -36,7 +36,7 @@ public class AuthService {
         }
 
         try {
-            User user = User.builder()
+            Users users = Users.builder()
                     .userId(signUpRequest.getUserId())
                     .password(passwordEncoder.encode(signUpRequest.getPassword()))
                     .userName(signUpRequest.getUserName())
@@ -50,7 +50,7 @@ public class AuthService {
 //                    .category(signUpRequest.getCategory())
                     .path(signUpRequest.getPath())
                     .build();
-            userRepository.save(user);
+            userRepository.save(users);
             log.info("회원 가입 성공");
             return new ResponseEntity(new ApiRes("회원가입 성공", HttpStatus.CREATED), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -60,7 +60,7 @@ public class AuthService {
 
     public ResponseEntity login(LoginRequest loginRequest, HttpServletResponse response) {
         try {
-            Optional<User> user = userRepository.findByUserId(loginRequest.getUserId());
+            Optional<Users> user = userRepository.findByUserId(loginRequest.getUserId());
             if (user.isPresent()) {
                 if(passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())){
                     String tokens = tokenProvider.createToken(user.get().getId());

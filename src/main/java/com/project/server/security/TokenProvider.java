@@ -2,9 +2,9 @@ package com.project.server.security;
 
 import com.project.server.config.AppProperties;
 import com.project.server.http.response.ApiRes;
-import com.project.server.entity.User;
+import com.project.server.entity.Users;
 import com.project.server.exception.ResourceNotFoundException;
-import com.project.server.repository.UserRepository;
+import com.project.server.repository.UsersRepository;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class TokenProvider {
     private final RedisTemplate<String, String> redisTemplate;
     private final AppProperties appProperties;
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
     public String createTokenOAuth2(Authentication authentication) {
         CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
@@ -34,7 +34,6 @@ public class TokenProvider {
     }
 
     public String createToken(UUID uuid) {
-
         Date now = new Date();
 
         String accessToken = Jwts.builder()
@@ -50,8 +49,8 @@ public class TokenProvider {
                 .signWith(SignatureAlgorithm.HS512, appProperties.getTokenSecret())
                 .compact();
 
-        User user = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User", "id", uuid));
-        redisTemplate.opsForValue().set(user.getUserId(), refreshToken, appProperties.getTokenExpirationMsec()* 2 * 24 * 7, TimeUnit.MILLISECONDS);
+        Users users = usersRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User", "id", uuid));
+        redisTemplate.opsForValue().set(users.getId().toString(), refreshToken, appProperties.getTokenExpirationMsec()* 2 * 24 * 7, TimeUnit.MILLISECONDS);
         log.info("refresh Token : {} ", refreshToken);
         return accessToken;
     }
@@ -96,9 +95,9 @@ public class TokenProvider {
     public boolean reGenerateRefreshToken(UUID uuid) {
         log.info("refreshToken 재발급 요청");
 
-        User user = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User", "id", uuid));
+        Users users = usersRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User", "id", uuid));
         ValueOperations<String, String> valueOperation = redisTemplate.opsForValue();
-        String refreshToken = valueOperation.get(user.getUserId());
+        String refreshToken = valueOperation.get(users.getId().toString());
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + appProperties.getTokenExpirationMsec()* 2 * 24 * 7);
@@ -116,12 +115,12 @@ public class TokenProvider {
             return true;
         } catch(ExpiredJwtException e) {    // refreshToken이 만료된 경우 재발급
             String newRefreshToken =Jwts.builder()
-                    .setSubject(String.valueOf(user.getId()))
+                    .setSubject(String.valueOf(users.getId()))
                     .setIssuedAt(new Date())
                     .setExpiration(expiryDate) // 시간 변경 예정
                     .signWith(SignatureAlgorithm.HS512, appProperties.getTokenSecret())
                     .compact();
-            redisTemplate.opsForValue().set(user.getUserId(), newRefreshToken, appProperties.getTokenExpirationMsec()* 2 * 24 * 7, TimeUnit.MILLISECONDS);
+            redisTemplate.opsForValue().set(users.getId().toString(), newRefreshToken, appProperties.getTokenExpirationMsec()* 2 * 24 * 7, TimeUnit.MILLISECONDS);
             log.info("refreshToken 재발급 완료 : {}", "Bearer " + newRefreshToken);
             return true;
         } catch(Exception e) {
@@ -132,9 +131,9 @@ public class TokenProvider {
 
     public ResponseEntity renewalRefreshToken(UUID uuid, HttpServletResponse response) {
         try {
-            User user = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User", "id", uuid));
+            Users users = usersRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("User", "id", uuid));
             ValueOperations<String, String> valueOperation = redisTemplate.opsForValue();
-            String refreshToken = valueOperation.get(user.getUserId());
+            String refreshToken = valueOperation.get(users.getId().toString());
             log.info("refresh Token : {}", refreshToken);
             Jwts.parser().setSigningKey(appProperties.getTokenSecret()).parseClaimsJws(refreshToken);   // 만료 체크
             String accessToken = createAccessToken(uuid);

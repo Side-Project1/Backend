@@ -13,7 +13,7 @@ import java.util.List;
 
 
 import static com.project.server.entity.QPromotions.promotions;
-import static com.project.server.entity.QUser.user;
+import static com.project.server.entity.QUsers.users;
 
 public class PromotionRepositoryCustomImpl extends QuerydslRepositorySupport implements PromotionRepositoryCustom {
     private JPAQueryFactory queryFactory;
@@ -23,13 +23,12 @@ public class PromotionRepositoryCustomImpl extends QuerydslRepositorySupport imp
         this.queryFactory = jpaQueryFactory;
     }
 
-
     @Override
     public List<PromotionPageResponse> findPagePromotion(Pageable pageable, PromotionPageRequest pr) {
         return queryFactory.select(
-                Projections.bean(PromotionPageResponse.class, promotions.title, user.userId, promotions.createdDate))
+                Projections.bean(PromotionPageResponse.class, promotions.title, users.userId, promotions.createdDate))
                         .from(promotions)
-                .join(user).on(promotions.user.id.eq(user.id))
+                .join(users).on(promotions.users.id.eq(users.id))
                 .where(likeTitle(pr.getTitle()), likeContents(pr.getContents()), eqUserId(pr.getUserId()), eqJobCategory(pr.getSubCategory()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -55,13 +54,13 @@ public class PromotionRepositoryCustomImpl extends QuerydslRepositorySupport imp
         if(userId == null || userId.isEmpty()){
             return null;
         }
-        return user.userId.eq(userId);
+        return users.userId.eq(userId);
     }
 
     private BooleanExpression eqJobCategory(String subCategory) {
         if(subCategory == null || subCategory.isEmpty()){
             return null;
         }
-        return user.userId.eq(subCategory);
+        return users.userId.eq(subCategory);
     }
 }

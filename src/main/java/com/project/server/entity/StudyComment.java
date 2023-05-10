@@ -1,5 +1,6 @@
 package com.project.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,16 +13,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Comment extends BaseTime {
+public class StudyComment extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="promotion_id")
-    private Promotions promotions;
+    @JsonIgnore
+    @JoinColumn(name="study_id")
+    private Study study;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name="user_sn")
     private Users users;
 
@@ -36,7 +39,8 @@ public class Comment extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_id", referencedColumnName = "comment_id")
-    private Comment parent;
+    @JsonIgnore
+    private StudyComment parent;
 
     @Column(name = "child_count")
     private Long childCount;
@@ -49,22 +53,4 @@ public class Comment extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private EnumStatus.Status isPrivated;
 
-//    public void update(CommentRequest commentRequest) {
-//        this.content = commentRequest.getContent();
-//    }
-
-
-//    public static Comment createComment(String content, Study study, User user, Comment parent) {
-//        Comment comment = new Comment();
-//        comment.content = content;
-//        comment.study = study;
-//        comment.user = user;
-//        comment.parent = parent;
-//        comment.isDeleted = DeleteStatus.N;
-//        return comment;
-//    }
-
-//    public void changeDeletedStatus(DeleteStatus deleteStatus) {
-//        this.isDeleted = deleteStatus;
-//    }
 }

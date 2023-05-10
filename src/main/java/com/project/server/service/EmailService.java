@@ -1,13 +1,11 @@
 package com.project.server.service;
 
 import com.project.server.entity.ConfirmMail;
-import com.project.server.entity.User;
-import com.project.server.exception.ResourceNotFoundException;
+import com.project.server.http.request.EmailConfirmRequest;
 import com.project.server.http.request.EmailRequest;
-import com.project.server.http.request.FindPwRequest;
 import com.project.server.http.response.ApiRes;
 import com.project.server.repository.ConfirmMailRepository;
-import com.project.server.repository.UserRepository;
+import com.project.server.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -27,7 +25,7 @@ import java.util.UUID;
 public class EmailService {
     private final ConfirmMailRepository confirmMailRepository;
     private final JavaMailSender javaMailSender;
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
     public ApiRes send(EmailRequest emailMessage) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -39,19 +37,23 @@ public class EmailService {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(emailMessage.getReceiver());
             mimeMessageHelper.setSubject("이메일 인증");
-            /**
-             * html 템플릿으로 보낼거면 true
-             * plaintext로 보낼거면 false
-             */
 
+            Random generator = new Random();
+            generator.setSeed(System.currentTimeMillis());
 
             ConfirmMail confirmMail = ConfirmMail.builder()
                     .expirationDate(LocalDateTime.now().plusMinutes(3L)) // 3분
                     .expired(false)
                     .email(emailMessage.getReceiver())
+                    .number(generator.nextInt(900000) + 100000) // 0 ~ 899,999 사이의 정수를 생성한 뒤 1000000을 더하여 6자리 난수 생성
                     .build();
             confirmMailRepository.save(confirmMail);
-            mimeMessageHelper.setText(confirmMail.getId().toString(), true);
+
+            /**
+             * html 템플릿으로 보낼거면 true
+             * plaintext로 보낼거면 false
+             */
+            mimeMessageHelper.setText(confirmMail.getNumber().toString(), true);
 
             javaMailSender.send(mimeMessage);
 //            log.info("sent email: {}", emailMessage.getMessage());
@@ -63,9 +65,9 @@ public class EmailService {
     }
 
 
-    public ApiRes confirm(String token) {
+    public ApiRes confirm(EmailConfirmRequest rq) {
         try{
-            confirmMailRepository.findByIdAndExpirationDateAfterAndExpired(UUID.fromString(token), LocalDateTime.now(), false).orElseThrow(() -> new Exception());
+            confirmMailRepository.findByNumberAndEmailAndExpirationDateAfterAndExpired(rq.getNumber(), rq.getReceiver(), LocalDateTime.now(), false).orElseThrow(() -> new Exception());
             return new ApiRes("인증 완료", HttpStatus.OK);
         } catch (Exception e) {
             log.error("error {}", e.getMessage());
@@ -75,7 +77,7 @@ public class EmailService {
 
     public ResponseEntity findId(EmailRequest emailRequest){
         try{
-            if(!userRepository.existsByEmail(emailRequest.getReceiver())) {
+            if(!usersRepository.existsByEmail(emailRequest.getReceiver())) {
                 return new ResponseEntity(new ApiRes("해당 이메일이 존재하지 않습니다.", HttpStatus.CONFLICT), HttpStatus.CONFLICT);
             }
 
@@ -83,7 +85,7 @@ public class EmailService {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(emailRequest.getReceiver());
             mimeMessageHelper.setSubject("아이디 찾기");
-            mimeMessageHelper.setText(userRepository.findByEmail(emailRequest.getReceiver()).get().getUserId(), true);
+            mimeMessageHelper.setText(usersRepository.findByEmail(emailRequest.getReceiver()).get().getUserId(), true);
             javaMailSender.send(mimeMessage);
 
             log.error("아이디 찾기 메일 전송");

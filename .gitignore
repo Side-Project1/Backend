@@ -40,4 +40,4 @@ out/
 
 #db
 data/
-logs/server.log
+logs/

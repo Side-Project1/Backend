@@ -18,10 +18,6 @@ public class Photo {
     @Column(name = "photo_id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resume_id")
-    private Resume resume;
-
     @Column
     private String fileName;
 

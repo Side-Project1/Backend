@@ -35,7 +35,7 @@ spring:
           kakao:
             authorization_uri: https://kauth.kakao.com/oauth/authorize
             token_uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kakao.com/v2/user/me
+            users-info-uri: https://kapi.kakao.com/v2/users/me
             user_name_attribute: id
 
   mail:
@@ -59,7 +59,7 @@ app:
     allowedOrigins: {allowedOrigins}
   oauth2:
     # After successfully authenticating with the OAuth2 Provider,
-    # we'll be generating an auth token for the user and sending the token to the
+    # we'll be generating an auth token for the users and sending the token to the
     # redirectUri mentioned by the client in the /oauth2/authorize request.
     # We're not using cookies because they won't work well in mobile clients.
     authorizedRedirectUris: {authorizeRedirectUris}

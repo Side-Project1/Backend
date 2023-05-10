@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CommentResponse {
+public class StudyCommentResponse {
     private Long commentId;
-    private Long promotionId;
+    private Long studyId;
     private String userId;
     private String comments;
     private Long ref;
@@ -35,19 +35,19 @@ public class CommentResponse {
     @Getter
     public static class UserResponse {
         private Long commentId;
-        private Long promotionId;
+        private Long studyId;
 
         private String comments;
         private String isPrivated;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime createdDate;
 
-        public UserResponse(Comment comment) {
-            this.commentId = comment.getId();
-            this.promotionId = comment.getPromotions().getId();
-            this.comments = comment.getComments();
-            this.isPrivated = comment.getIsPrivated().getValue();
-            this.createdDate = comment.getCreatedDate();
+        public UserResponse(StudyComment studyComment) {
+            this.commentId = studyComment.getId();
+            this.studyId = studyComment.getStudy().getId();
+            this.comments = studyComment.getComments();
+            this.isPrivated = studyComment.getIsPrivated().getValue();
+            this.createdDate = studyComment.getCreatedDate();
         }
 
     }
