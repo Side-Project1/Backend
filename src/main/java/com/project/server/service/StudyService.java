@@ -123,16 +123,15 @@ public class StudyService {
     }
     public ResponseEntity getStudyList(Pageable pageable, StudyPageRequest studyPageRequest) {
         try {
-            List<StudyPageResponse> studyResponses = studyRepositoryCustom.findPageStudy(pageable, studyPageRequest);
-            System.out.println(studyResponses);
-            return new ResponseEntity(new ApiRes("스터디 페이지 조회 성공", HttpStatus.OK, studyResponses), HttpStatus.OK);
+            List<StudyPageResponse> studyPageResponseList = studyRepository.findPageStudy(pageable, studyPageRequest);
+            studyPageResponseList.forEach(data -> data.setJobCategoryList(studyRepository.findById(data.getId()).get().getJobCategoryList()));
+            return new ResponseEntity(new ApiRes("스터디 페이지 조회 성공", HttpStatus.OK, studyPageResponseList), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes("스터디 페이지 조회 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
-
-        //글 생성
+    //글 생성
         @Transactional
         public ResponseEntity writeStudy(Users users, StudyRequest studyRequest, List<Long> sub_category, MultipartFile[] files) throws IOException {
             try {

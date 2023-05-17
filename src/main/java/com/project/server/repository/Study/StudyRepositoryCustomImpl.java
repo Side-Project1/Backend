@@ -41,7 +41,7 @@ public class StudyRepositoryCustomImpl extends QuerydslRepositorySupport impleme
     public List<StudyPageResponse> findPageStudy(Pageable pageable, StudyPageRequest pr) {
 
         return queryFactory.select(
-                        Projections.bean(StudyPageResponse.class, study.title, study.contents, users.userId,study.region,study.createdDate))
+                        Projections.bean(StudyPageResponse.class, study.id,study.title, study.contents, users.userId,study.region,study.createdDate))
                 .from(study)
                 .join(users).on(study.users.id.eq(users.id))
                 .join(study.jobCategoryList, jobCategory)

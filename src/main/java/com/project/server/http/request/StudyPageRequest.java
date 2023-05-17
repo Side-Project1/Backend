@@ -17,7 +17,9 @@ public class StudyPageRequest {
     private String title;
     @Schema(description = "내용" , example = "내용")
     private String contents;
-    @Schema(description = "하위 카테고리" , example = "1, 2")
+    @Schema(description = "작성자" , example = "나")
+    private String userId;
+    @Schema(description = "하위 카테고리" , example = "하위 카테고리")
     private List<Long> subCategory;
 
 }

@@ -55,7 +55,6 @@ public class StudyResponse {
 
 
         public UserResponse(Study study) {
-            this.id = study.getId();
             this.title = study.getTitle();
             this.author=study.getAuthor();
             this.max=study.getMax();
