@@ -64,7 +64,6 @@ public class S3Service {
         try {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(contentType);
-
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (AmazonServiceException e) {

@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import java.util.List;
 
 
+import static com.project.server.entity.QJobCategory.jobCategory;
 import static com.project.server.entity.QPromotions.promotions;
 import static com.project.server.entity.QUsers.users;
 
@@ -25,11 +26,12 @@ public class PromotionRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
     @Override
     public List<PromotionPageResponse> findPagePromotion(Pageable pageable, PromotionPageRequest pr) {
-        return queryFactory.select(
-                Projections.bean(PromotionPageResponse.class, promotions.title, users.userId, promotions.createdDate))
+        return queryFactory.selectDistinct(
+                Projections.bean(PromotionPageResponse.class, promotions.id, promotions.title, users.userId, promotions.createdDate))
                         .from(promotions)
                 .join(users).on(promotions.users.id.eq(users.id))
-                .where(likeTitle(pr.getTitle()), likeContents(pr.getContents()), eqUserId(pr.getUserId()), eqJobCategory(pr.getSubCategory()))
+                .join(promotions.jobCategoryList, jobCategory)
+                .where(likeTitle(pr.getTitle()), likeContents(pr.getContents()), jobCategory.id.in(pr.getSubCategory()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(promotions.createdDate.desc())
@@ -40,14 +42,14 @@ public class PromotionRepositoryCustomImpl extends QuerydslRepositorySupport imp
         if(title == null || title.isEmpty()){
             return null;
         }
-        return promotions.title.like(title);
+        return promotions.title.contains(title);
     }
 
     private BooleanExpression likeContents(String contents) {
         if(contents == null || contents.isEmpty()){
             return null;
         }
-        return promotions.contents.like(contents);
+        return promotions.contents.contains(contents);
     }
 
     private BooleanExpression eqUserId(String userId) {

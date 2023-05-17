@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -17,5 +19,5 @@ public class PromotionPageRequest {
     @Schema(description = "작성자" , example = "나")
     private String userId;
     @Schema(description = "하위 카테고리" , example = "하위 카테고리")
-    private String subCategory;
+    private List<Long> subCategory;
 }

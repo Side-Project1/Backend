@@ -26,11 +26,13 @@ import java.util.List;
 public class PromotionService {
     private final UsersRepository usersRepository;
     private final PromotionRepository promotionRepository;
-    private final PromotionRepositoryCustomImpl promotionRepositoryCustom;
 
+    @Transactional
     public ResponseEntity getPagePromotion(Pageable pageable, PromotionPageRequest promotionPageRequest) {
         try {
-            List<PromotionPageResponse> promotionPageResponseList = promotionRepositoryCustom.findPagePromotion(pageable, promotionPageRequest);
+            List<PromotionPageResponse> promotionPageResponseList = promotionRepository.findPagePromotion(pageable, promotionPageRequest);
+
+            promotionPageResponseList.forEach(data -> data.setJobCategoryList(promotionRepository.findById(data.getId()).get().getJobCategoryList()));
             return new ResponseEntity(new ApiRes("홍보글 페이지 조회 성공", HttpStatus.OK, promotionPageResponseList), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes("홍보글 페이지 조회 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);

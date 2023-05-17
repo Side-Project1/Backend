@@ -3,6 +3,7 @@ package com.project.server.controller;
 import com.project.server.entity.Study;
 import com.project.server.entity.Users;
 import com.project.server.exception.ResourceNotFoundException;
+import com.project.server.http.request.PromotionPageRequest;
 import com.project.server.http.request.StudyApplyRequest;
 import com.project.server.http.request.StudyPageRequest;
 import com.project.server.http.request.StudyRequest;
@@ -42,7 +43,7 @@ public class StudyController {
     private final StudyService studyService;
 
 
-    @Operation(tags = "Study", summary = "스터디 목록 조회")
+    @Operation(tags = "Study", summary = "스터디 페이지 상세 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
@@ -73,6 +74,9 @@ public class StudyController {
 //        return new ResponseEntity(new ApiRes("스터디 상세 보기 성공", HttpStatus.OK,cnt), HttpStatus.OK);
     }
 
+
+
+
     @Operation(tags = "Study", summary = "스터디 마감 변경")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
@@ -84,7 +88,6 @@ public class StudyController {
     @PreAuthorize("hasAnyRole('USER')")
     @PostMapping("/{studyId}/dead")
     public ResponseEntity dead(@ApiIgnore @AuthUser Users users,@Parameter(description = "스터디 게시글 일련번호")@PathVariable("studyId") Long studyId) {
-
         return studyService.dead(users,studyId);
 
     }
