@@ -18,6 +18,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
+
 @Tag(name="Promotion", description = "홍보 API")
 @RestController
 @RequestMapping("/api/v1/prom")
@@ -33,8 +35,11 @@ public class PromotionController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
     @GetMapping("")
-    public ResponseEntity getPagePromotion(@PageableDefault Pageable pageable, @RequestBody(required = false) PromotionPageRequest promotionPageRequest) {
-        return promotionService.getPagePromotion(pageable, promotionPageRequest);
+    public ResponseEntity getPagePromotion(@PageableDefault Pageable pageable,
+                                           @RequestParam(required = false) String title,
+                                           @RequestParam(required = false) String contents,
+                                           @RequestParam(required = false) List<Long> subCategory) {
+        return promotionService.getPagePromotion(pageable, title, contents, subCategory);
     }
 
     @Operation(tags = "Promotion", summary = "홍보 게시글 조회")

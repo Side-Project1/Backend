@@ -3,14 +3,12 @@ package com.project.server.service;
 import com.project.server.entity.JobCategory;
 import com.project.server.entity.Promotions;
 import com.project.server.entity.Users;
-import com.project.server.http.request.PromotionPageRequest;
 import com.project.server.http.request.PromotionRequest;
 import com.project.server.http.response.ApiRes;
 import com.project.server.http.response.PromotionPageResponse;
 import com.project.server.http.response.PromotionResponse;
 import com.project.server.repository.UsersRepository;
 import com.project.server.repository.promotion.PromotionRepository;
-import com.project.server.repository.promotion.PromotionRepositoryCustomImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -28,9 +26,9 @@ public class PromotionService {
     private final PromotionRepository promotionRepository;
 
     @Transactional
-    public ResponseEntity getPagePromotion(Pageable pageable, PromotionPageRequest promotionPageRequest) {
+    public ResponseEntity getPagePromotion(Pageable pageable, String title, String contents, List<Long> subCategory) {
         try {
-            List<PromotionPageResponse> promotionPageResponseList = promotionRepository.findPagePromotion(pageable, promotionPageRequest);
+            List<PromotionPageResponse> promotionPageResponseList = promotionRepository.findPagePromotion(pageable, title, contents, subCategory);
 
             promotionPageResponseList.forEach(data -> data.setJobCategoryList(promotionRepository.findById(data.getId()).get().getJobCategoryList()));
             return new ResponseEntity(new ApiRes("홍보글 페이지 조회 성공", HttpStatus.OK, promotionPageResponseList), HttpStatus.OK);
