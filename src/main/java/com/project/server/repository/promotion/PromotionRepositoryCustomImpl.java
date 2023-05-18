@@ -25,13 +25,13 @@ public class PromotionRepositoryCustomImpl extends QuerydslRepositorySupport imp
     }
 
     @Override
-    public List<PromotionPageResponse> findPagePromotion(Pageable pageable, PromotionPageRequest pr) {
+    public List<PromotionPageResponse> findPagePromotion(Pageable pageable, String title, String contents, List<Long> subCategory) {
         return queryFactory.selectDistinct(
                 Projections.bean(PromotionPageResponse.class, promotions.id, promotions.title, users.userId, promotions.createdDate))
                         .from(promotions)
                 .join(users).on(promotions.users.id.eq(users.id))
                 .join(promotions.jobCategoryList, jobCategory)
-                .where(likeTitle(pr.getTitle()), likeContents(pr.getContents()), jobCategory.id.in(pr.getSubCategory()))
+                .where(likeTitle(title), likeContents(contents), inSubCategory(subCategory))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(promotions.createdDate.desc())
@@ -50,6 +50,13 @@ public class PromotionRepositoryCustomImpl extends QuerydslRepositorySupport imp
             return null;
         }
         return promotions.contents.contains(contents);
+    }
+
+    private BooleanExpression inSubCategory(List<Long> subCategory) {
+        if(subCategory == null || subCategory.isEmpty()){
+            return null;
+        }
+        return jobCategory.id.in(subCategory);
     }
 
     private BooleanExpression eqUserId(String userId) {
