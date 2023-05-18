@@ -20,7 +20,7 @@ public class StudyApply {
     private String introduction;
 
     @Enumerated(EnumType.STRING)
-    private StudyApplyStatus applyStatus;
+    private EnumStatus.StudyApplyStatus applyStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="study_id")

@@ -146,10 +146,8 @@ public class StudyController {
     @PreAuthorize("hasAnyRole('USER')")
     @PostMapping("/studies/{studyId}/members")
     public ResponseEntity addStudyMembers(@PathVariable Long studyId, @ApiIgnore @AuthUser Users users, @RequestBody StudyApplyRequest studyApplyRequest) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new ResourceNotFoundException("Study", "id", studyId));
-        String res = studyService.addStudyMembers(studyId, users, studyApplyRequest);
-        return new ResponseEntity(new ApiRes("스터디 멤버 등록 성공", HttpStatus.OK, res), HttpStatus.OK);
+        studyService.addStudyMembers(studyId, users, studyApplyRequest);
+        return new ResponseEntity(new ApiRes("스터디 멤버 등록 성공", HttpStatus.OK), HttpStatus.OK);
 
     }
 
@@ -161,11 +159,9 @@ public class StudyController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
     @PreAuthorize("hasAnyRole('USER')")
-    @PostMapping("/studies/{studyId}/{approve}/apply")
-    public ResponseEntity approveStudyApply(@PathVariable Long studyId,@ApiIgnore @AuthUser Users users, @PathVariable (name="approve") String approve) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new ResourceNotFoundException("Study", "id", studyId));
-       studyService.approveStudyApply(studyId, users,approve);
+    @PostMapping("/studies/{userId}/{studyId}/{approve}/apply")
+    public ResponseEntity approveStudyApply(@PathVariable(name="userId")  String username,@PathVariable (name="studyId")Long studyId, @PathVariable (name="approve") String approve) {
+       studyService.approveStudyApply(studyId, username,approve);
         return new ResponseEntity(new ApiRes("스터디 멤버 승인", HttpStatus.OK), HttpStatus.OK);
     }
 }

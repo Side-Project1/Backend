@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.project.server.entity.StudyApplyStatus.*;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -63,7 +62,7 @@ public class StudyService {
     public ResponseEntity dead(Users users, Long studyId) {
         try {
             Study study = studyRepository.findById(studyId).orElseThrow(() -> new RuntimeException("Study not found"));
-            study.setRecruitment(EnumStatus.Status.N);
+            study.setRecruitment(EnumStatus.RecuritmentStatus.모집마감);
             studyRepository.save(study);
             return new ResponseEntity(new ApiRes("스터디 마감 성공", HttpStatus.OK), HttpStatus.OK);
         } catch (Exception e) {
@@ -141,7 +140,7 @@ public class StudyService {
                         .max(studyRequest.getMax())
                         .region(studyRequest.getRegion())
                         .contents(studyRequest.getContents())
-                        .recruitment(EnumStatus.Status.Y)
+                        .recruitment(EnumStatus.RecuritmentStatus.모집중)
                         .users(users)
                         .build();
                 sub_category.forEach(id -> study.getJobCategoryList().add(new JobCategory(id)));
@@ -150,6 +149,11 @@ public class StudyService {
                 Users saveUsers = usersRepository.findById(users.getId()).get();
                 saveUsers.getStudies().add(study);
                 String filex = files[0].getOriginalFilename();
+                StudyMember studyMember = StudyMember.builder()
+                        .study(study)
+                        .users(users)
+                        .build();
+                studyMemberRepository.save(studyMember);
 
                 if (!filex.equals("")) {
                     for (MultipartFile file : files) {
@@ -173,45 +177,45 @@ public class StudyService {
 
         // 스터디 멤버 추가
         //글 생성
-
-        public String addStudyMembers(Long studyID,Users users, StudyApplyRequest studyApplyRequest) {
+        public void addStudyMembers(Long studyID,Users users, StudyApplyRequest studyApplyRequest) {
             Study study = studyRepository.findById(studyID).orElseThrow(() -> new IllegalArgumentException(String.format(String.format("study is not Found!"))));
             Users user = usersRepository.findByUserId(users.getUserId()).orElseThrow(() -> new IllegalArgumentException(String.format("user is not Found!")));
             StudyApply studyApply = StudyApply.builder()
                     .study(study)
                     .introduction(studyApplyRequest.getIntroduction())
                     .users(user)
-                    .applyStatus(PENDING)
-
+                    .applyStatus(EnumStatus.StudyApplyStatus.PENDING)
                     .build();
 
             studyApplyRepository.save(studyApply);
-            return study.getMembers().toString();
         }
 
 
-        public void approveStudyApply(Long studyId, Users users , String approve) {
-            Users user = usersRepository.findByUserId(users.getUserId()).orElseThrow(() -> new IllegalArgumentException("user not found"));
-            StudyApply studyApply = studyApplyRepository.findByStudyId(studyId)
-                    .orElseThrow(() -> new IllegalArgumentException("study not found"));
+        public void approveStudyApply(Long studyId, String username , String approve) {
+            //방장이 승인하고자 하는 유저
+            Users user = usersRepository.findByUserId(username).orElseThrow(() -> new IllegalArgumentException("user not found"));
+            Study study = studyRepository.findById(studyId).orElseThrow(() -> new IllegalArgumentException("study not found"));;
+            StudyApply studyApply=studyApplyRepository.findByUsersAndStudy(user,study);
 
-            if (studyApply.getUsers().getId().equals(users.getId()) && approve.equals("승인")) {
+            if (studyApply.getUsers().getId().equals(user.getId()) && approve.equals("승인")) {
                 System.out.println(studyApply.getUsers());
-                studyApply.setApplyStatus(APPROVED);
+                studyApply.setApplyStatus(EnumStatus.StudyApplyStatus.APPROVED);
                 studyApplyRepository.save(studyApply);
+                study = studyApply.getStudy();
+                Users members = studyApply.getUsers();
+
+                StudyMember studyMember = StudyMember.builder()
+                        .study(study)
+                        .users(members)
+                        .build();
+                studyMemberRepository.save(studyMember);
             //거절했을 경우
             } else{
-                    studyApply.setApplyStatus(REJECTED);
+                    studyApply.setApplyStatus(EnumStatus.StudyApplyStatus.REJECTED);
                     studyApplyRepository.save(studyApply);
             }
-            Study study = studyApply.getStudy();
-            Users members = studyApply.getUsers();
 
-            StudyMember studyMember = StudyMember.builder()
-                    .study(study)
-                    .users(members)
-                    .build();
-            studyMemberRepository.save(studyMember);
+
         }
 
         //수정

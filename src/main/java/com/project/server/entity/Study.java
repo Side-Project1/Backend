@@ -30,12 +30,10 @@ public class Study extends BaseTime {
 
     @Column(name = "recruitment")
     @Enumerated(value = EnumType.STRING)
-    private EnumStatus.Status recruitment;
+    private EnumStatus.RecuritmentStatus recruitment;
 
     @Column(name="VIEW_COUNT")
     private Long viewCount; //조회수
-
-
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL ,fetch = FetchType.LAZY,orphanRemoval = true )
     private List<Photo> studyPhotoList =new ArrayList<>();
@@ -67,7 +65,7 @@ public class Study extends BaseTime {
 
 
     @Builder
-    public Study(String title, String author, int max, String region, String contents,EnumStatus.Status recruitment ,Users users, Long viewCount) {
+    public Study(String title, String author, int max, String region, String contents,EnumStatus.RecuritmentStatus recruitment ,Users users, Long viewCount) {
         this.title = title;
         this.author=author;
         this.max=max;
