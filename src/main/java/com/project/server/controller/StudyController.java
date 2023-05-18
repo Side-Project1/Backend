@@ -43,7 +43,7 @@ public class StudyController {
     private final StudyService studyService;
 
 
-    @Operation(tags = "Study", summary = "스터디 페이지 상세 조회")
+    @ApiOperation(tags = "Study", value = "스터디 페이지 상세 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
@@ -57,14 +57,13 @@ public class StudyController {
 
     }
 
-    @Operation(tags = "Study", summary = "스터디 상세 조회")
+    @ApiOperation(tags = "Study", value = "스터디 상세 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
-    @ApiOperation(value = "스터디 상제 조회")
     @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/{studyId}")
     public ResponseEntity findById(@ApiIgnore @AuthUser Users users, @Parameter(description = "스터디 게시글 일련번호")@PathVariable("studyId") Long studyId) {
@@ -75,16 +74,13 @@ public class StudyController {
     }
 
 
-
-
-    @Operation(tags = "Study", summary = "스터디 마감 변경")
+    @ApiOperation(tags = "Study", value = "스터디 마감 변경")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND !!"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
-    @ApiOperation(value = "스터디 마감 변경")
     @PreAuthorize("hasAnyRole('USER')")
     @PostMapping("/{studyId}/dead")
     public ResponseEntity dead(@ApiIgnore @AuthUser Users users,@Parameter(description = "스터디 게시글 일련번호")@PathVariable("studyId") Long studyId) {
@@ -92,7 +88,7 @@ public class StudyController {
 
     }
 
-    @Operation(tags = "Study", summary = "스터디 등록")
+    @ApiOperation(tags = "Study", value = "스터디 등록")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
@@ -116,7 +112,7 @@ public class StudyController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
     @PreAuthorize("hasAnyRole('USER')")
-    @ApiOperation(value = "사용자가 쓴 스터디 글 수정")
+    @ApiOperation(tags = "study", value = "사용자가 쓴 스터디 글 수정")
     @PutMapping(value = "/{studyId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
     public ResponseEntity updateStudy(@ApiIgnore @AuthUser Users users, @PathVariable Long studyId,
                                       StudyRequest studyRequest, @RequestParam(name="sub_category") List<Long> sub_category,@RequestParam (required = false) MultipartFile[] files) throws IOException {
@@ -124,7 +120,7 @@ public class StudyController {
         //return new ResponseEntity(new ApiRes("스터디 수정 성공", HttpStatus.OK), HttpStatus.OK);
     }
 
-    @Operation(tags = "study", summary = "스터디 게시글 삭제")
+
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
@@ -132,7 +128,7 @@ public class StudyController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
     @PreAuthorize("hasAnyRole('USER')")
-    @ApiOperation(value = "사용자가 쓴 스터디 글 삭제")
+    @ApiOperation(tags = "study", value = "사용자가 쓴 스터디 글 삭제")
     @DeleteMapping("/{studyId}/delete")
     public ResponseEntity deleteStudyById(@ApiIgnore @AuthUser Users users, @Parameter(description = "스터디 게시글 일련번호") @PathVariable Long studyId) {
         studyService.deleteStudyById(users, studyId);
@@ -140,7 +136,7 @@ public class StudyController {
 
     }
 
-    @Operation(tags = "study", summary = "스터디 멤버 추가")
+    @ApiOperation(tags = "study", value = "스터디 멤버 추가")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
@@ -157,7 +153,7 @@ public class StudyController {
 
     }
 
-    @Operation(tags = "study", summary = "스터디 멤버 승인")
+    @ApiOperation(tags = "study", value = "스터디 멤버 승인")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
