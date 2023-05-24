@@ -47,13 +47,13 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER')")
-    @PutMapping("/account")
+    @PutMapping("/phone")
     public ResponseEntity changePhone(@ApiIgnore @AuthUser Users users, @RequestParam(name = "phone") String phone) {
         return userService.changePhone(users, phone);
     }
 
     @PreAuthorize("hasAnyRole('USER')")
-    @PutMapping("/account")
+    @PutMapping("/password")
     public ResponseEntity changePassword(@ApiIgnore @AuthUser Users users, @RequestBody PasswordRequest passwordRequest) {
         return userService.changePassword(users, passwordRequest);
     }
