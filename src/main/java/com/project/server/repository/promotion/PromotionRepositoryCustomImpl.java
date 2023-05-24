@@ -24,7 +24,6 @@ public class PromotionRepositoryCustomImpl extends QuerydslRepositorySupport imp
         this.queryFactory = jpaQueryFactory;
     }
 
-    @Override
     public List<PromotionPageResponse> findPagePromotion(Pageable pageable, String title, String contents, List<Long> subCategory) {
         return queryFactory.selectDistinct(
                 Projections.bean(PromotionPageResponse.class, promotions.id, promotions.title, users.userId, promotions.createdDate))
