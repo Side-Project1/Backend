@@ -2,6 +2,8 @@ package com.project.server.controller;
 
 
 import com.project.server.entity.Users;
+import com.project.server.http.request.AccountRequest;
+import com.project.server.http.request.PasswordRequest;
 import com.project.server.service.UserService;
 import com.project.server.util.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +27,7 @@ public class UserController {
     private final UserService userService;
 
     @Transactional
-    @Operation(summary = "사용자 테스트", description = "사용자 테스트")
+    @Operation(summary = "마이페이지", description = "마이페이지")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!"),
@@ -38,4 +40,21 @@ public class UserController {
         return new ResponseEntity(userService.getUserInfo(users), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('USER')")
+    @PutMapping("/account")
+    public ResponseEntity changeAccount(@ApiIgnore @AuthUser Users users, @RequestBody AccountRequest accountRequest) {
+        return userService.changeAcount(users, accountRequest);
+    }
+
+    @PreAuthorize("hasAnyRole('USER')")
+    @PutMapping("/account")
+    public ResponseEntity changePhone(@ApiIgnore @AuthUser Users users, @RequestParam(name = "phone") String phone) {
+        return userService.changePhone(users, phone);
+    }
+
+    @PreAuthorize("hasAnyRole('USER')")
+    @PutMapping("/account")
+    public ResponseEntity changePassword(@ApiIgnore @AuthUser Users users, @RequestBody PasswordRequest passwordRequest) {
+        return userService.changePassword(users, passwordRequest);
+    }
 }
