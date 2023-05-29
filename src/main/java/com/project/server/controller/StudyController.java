@@ -1,14 +1,9 @@
 package com.project.server.controller;
 
-import com.project.server.entity.Study;
 import com.project.server.entity.Users;
-import com.project.server.exception.ResourceNotFoundException;
-import com.project.server.http.request.PromotionPageRequest;
 import com.project.server.http.request.StudyApplyRequest;
-import com.project.server.http.request.StudyPageRequest;
 import com.project.server.http.request.StudyRequest;
 import com.project.server.http.response.ApiRes;
-import com.project.server.http.response.StudyResponse;
 import com.project.server.repository.Study.StudyRepository;
 import com.project.server.service.StudyService;
 import com.project.server.util.AuthUser;
@@ -23,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -52,8 +46,8 @@ public class StudyController {
     })
     @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("")
-    public ResponseEntity getStudyList(@PageableDefault Pageable pageable, @RequestBody(required = false) StudyPageRequest studyPageRequest) {
-        return studyService.getStudyList(pageable, studyPageRequest);
+    public ResponseEntity getStudyList(@PageableDefault Pageable pageable,@RequestParam(required = false) String title,@RequestParam(required = false) String contents,@RequestParam(required = false) List<Long> subCategory) {
+        return studyService.getStudyList(pageable, title,contents,subCategory);
 
     }
 
@@ -96,11 +90,12 @@ public class StudyController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR !!")
     })
     @PreAuthorize("hasAnyRole('USER')")
-    @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(  "")
     public ResponseEntity writeStudy(@ApiIgnore @AuthUser Users users,
-                                      StudyRequest studyRequest, @RequestParam(name="sub_category") List<Long> sub_category,@RequestBody(required = false) MultipartFile[] files ) throws IOException {
+                                      @RequestPart(value = "studyRequest") StudyRequest studyRequest,
+                                     @RequestPart(value = "file", required = false) MultipartFile[] files ) throws IOException {
 
-            return studyService.writeStudy(users, studyRequest,sub_category,files);
+            return studyService.writeStudy(users, studyRequest,files);
             //return new ResponseEntity(new ApiRes("스터디 등록 성공", HttpStatus.CREATED), HttpStatus.CREATED);
     }
 
@@ -113,10 +108,11 @@ public class StudyController {
     })
     @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(tags = "study", value = "사용자가 쓴 스터디 글 수정")
-    @PutMapping(value = "/{studyId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
+    @PutMapping( "/{studyId}")
     public ResponseEntity updateStudy(@ApiIgnore @AuthUser Users users, @PathVariable Long studyId,
-                                      StudyRequest studyRequest, @RequestParam(name="sub_category") List<Long> sub_category,@RequestParam (required = false) MultipartFile[] files) throws IOException {
-        return studyService.updateStudy(users, studyId, sub_category,studyRequest,files);
+                                      @RequestPart(value = "studyRequest")StudyRequest studyRequest,
+                                      @RequestPart (value= "file", required = false) MultipartFile[] files) throws IOException {
+        return studyService.updateStudy(users, studyId,studyRequest,files);
         //return new ResponseEntity(new ApiRes("스터디 수정 성공", HttpStatus.OK), HttpStatus.OK);
     }
 

@@ -25,6 +25,7 @@ public class UserResponse {
     private List<PromotionResponse.UserResponse> promotionResponses;
 
     private List<StudyResponse.UserResponse> studyResponse;
+    private List<CommunityResponse.UserResponse> communityResponse;
     private List<StudyCommentResponse.UserResponse> studycommentResponse;
 
     public UserResponse(Users users) {
@@ -49,6 +50,10 @@ public class UserResponse {
 
         this.studyResponse = users.getStudies().stream()
                 .map(study -> new StudyResponse.UserResponse(study))
+                .collect(Collectors.toList());
+
+        this.communityResponse = users.getCommunityList().stream()
+                .map(community -> new CommunityResponse.UserResponse(community))
                 .collect(Collectors.toList());
 
     }

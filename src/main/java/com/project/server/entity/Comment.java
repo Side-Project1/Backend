@@ -49,22 +49,5 @@ public class Comment extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private EnumStatus.Status isPrivated;
 
-//    public void update(CommentRequest commentRequest) {
-//        this.content = commentRequest.getContent();
-//    }
 
-
-//    public static Comment createComment(String content, Study study, User user, Comment parent) {
-//        Comment comment = new Comment();
-//        comment.content = content;
-//        comment.study = study;
-//        comment.user = user;
-//        comment.parent = parent;
-//        comment.isDeleted = DeleteStatus.N;
-//        return comment;
-//    }
-
-//    public void changeDeletedStatus(DeleteStatus deleteStatus) {
-//        this.isDeleted = deleteStatus;
-//    }
 }

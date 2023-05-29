@@ -4,10 +4,7 @@ package com.project.server.http.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.project.server.entity.EnumStatus;
-import com.project.server.entity.JobCategory;
-import com.project.server.entity.Promotions;
-import com.project.server.entity.Study;
+import com.project.server.entity.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +12,7 @@ import lombok.Setter;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -46,6 +44,7 @@ public class StudyResponse {
         private String region;
         private Long viewCount;
         private String recruitment;
+        private List<Photo> studyPhotoList =new ArrayList<>();
         private List<JobCategory> jobCategoryList;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime createdDate;
