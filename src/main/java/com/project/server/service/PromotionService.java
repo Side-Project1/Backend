@@ -87,9 +87,9 @@ public class PromotionService {
         try {
             Promotions promotions = promotionRepository.findById(id).orElseThrow(()->new IllegalStateException("게시글이 존재하지 않습니다"));
             if(!users.getUserId().equals(promotions.getUsers().getUserId())) throw new IllegalStateException("글쓴이만 삭제할 수 있습니다.");
-            
+
             promotionRepository.deleteById(id);
-            
+
             return new ResponseEntity(new ApiRes("홍보글 삭제 성공", HttpStatus.OK), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes("홍보글 삭제+ 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);

@@ -1,29 +1,17 @@
 package com.project.server.repository.Study;
 
 
-
 import com.project.server.entity.Study;
-import com.project.server.http.request.PromotionPageRequest;
-import com.project.server.http.request.StudyPageRequest;
-
-import com.project.server.http.response.PromotionPageResponse;
 import com.project.server.http.response.StudyPageResponse;
-
-import com.project.server.http.response.StudyResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
-
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
 
 import static com.project.server.entity.QJobCategory.jobCategory;
-import static com.project.server.entity.QPromotions.promotions;
 import static com.project.server.entity.QStudy.study;
 import static com.project.server.entity.QUsers.users;
 
@@ -38,14 +26,14 @@ public class StudyRepositoryCustomImpl extends QuerydslRepositorySupport impleme
 
 
     @Override
-    public List<StudyPageResponse> findPageStudy(Pageable pageable, StudyPageRequest pr) {
+    public List<StudyPageResponse> findPageStudy(Pageable pageable, String title, String contents, List<Long> subCategory) {
 
         return queryFactory.select(
                         Projections.bean(StudyPageResponse.class, study.id,study.title, study.contents, users.userId,study.region,study.createdDate))
                 .from(study)
                 .join(users).on(study.users.id.eq(users.id))
                 .join(study.jobCategoryList, jobCategory)
-                .where(likeTitle(pr.getTitle()), likeContents(pr.getContents()), jobCategory.id.in(pr.getSubCategory()))
+                .where(likeTitle(title), likeContents(contents), jobCategory.id.in(subCategory))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(study.createdDate.desc())

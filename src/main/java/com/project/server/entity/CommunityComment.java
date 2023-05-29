@@ -1,5 +1,6 @@
 package com.project.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,16 +13,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Comment extends BaseTime {
+public class CommunityComment extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="promotion_id")
-    private Promotions promotions;
+    @JsonIgnore
+    @JoinColumn(name="community_id")
+    private Community community;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name="user_sn")
     private Users users;
 
@@ -36,7 +39,8 @@ public class Comment extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_id", referencedColumnName = "comment_id")
-    private Comment parent;
+    @JsonIgnore
+    private CommunityComment parent;
 
     @Column(name = "child_count")
     private Long childCount;
@@ -48,6 +52,5 @@ public class Comment extends BaseTime {
     @Column(name = "is_privated")
     @Enumerated(value = EnumType.STRING)
     private EnumStatus.Status isPrivated;
-
 
 }

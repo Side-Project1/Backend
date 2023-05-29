@@ -56,6 +56,9 @@ public class Users extends BaseTime {
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default
+    private List<CommunityComment> communityCommentList = new ArrayList<>();
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Promotions> promotionsList = new ArrayList<>();
 
 
@@ -63,6 +66,11 @@ public class Users extends BaseTime {
     @JsonBackReference
     @Builder.Default
     private List<Study> studies =new ArrayList<>();
+
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonBackReference
+    @Builder.Default
+    private List<Community> communityList =new ArrayList<>();
 
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)

@@ -2,7 +2,6 @@ package com.project.server.service;
 
 import com.project.server.entity.*;
 import com.project.server.http.request.StudyApplyRequest;
-import com.project.server.http.request.StudyPageRequest;
 import com.project.server.http.request.StudyRequest;
 import com.project.server.http.response.ApiRes;
 import com.project.server.http.response.StudyPageResponse;
@@ -10,14 +9,12 @@ import com.project.server.http.response.StudyResponse;
 import com.project.server.repository.PhotoRepository;
 import com.project.server.repository.Study.StudyApplyRepository;
 import com.project.server.repository.Study.StudyMemberRepository;
-import com.project.server.repository.Study.StudyRepositoryCustom;
 import com.project.server.repository.Study.StudyRepository;
+import com.project.server.repository.Study.StudyRepositoryCustom;
 import com.project.server.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -30,7 +27,9 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
 
@@ -120,19 +119,19 @@ public class StudyService {
 
 
     }
-    public ResponseEntity getStudyList(Pageable pageable, StudyPageRequest studyPageRequest) {
+    public ResponseEntity getStudyList(Pageable pageable, String title, String contents, List<Long> subCategory) {
         try {
-            List<StudyPageResponse> studyPageResponseList = studyRepository.findPageStudy(pageable, studyPageRequest);
+            List<StudyPageResponse> studyPageResponseList= studyRepository.findPageStudy(pageable, title, contents, subCategory);
+
             studyPageResponseList.forEach(data -> data.setJobCategoryList(studyRepository.findById(data.getId()).get().getJobCategoryList()));
             return new ResponseEntity(new ApiRes("스터디 페이지 조회 성공", HttpStatus.OK, studyPageResponseList), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes("스터디 페이지 조회 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
-
     //글 생성
         @Transactional
-        public ResponseEntity writeStudy(Users users, StudyRequest studyRequest, List<Long> sub_category, MultipartFile[] files) throws IOException {
+        public ResponseEntity writeStudy(Users users, StudyRequest studyRequest,MultipartFile[] files) throws IOException {
             try {
                 Study study = Study.builder()
                         .title(studyRequest.getTitle())
@@ -141,9 +140,10 @@ public class StudyService {
                         .region(studyRequest.getRegion())
                         .contents(studyRequest.getContents())
                         .recruitment(EnumStatus.RecuritmentStatus.모집중)
+
                         .users(users)
                         .build();
-                sub_category.forEach(id -> study.getJobCategoryList().add(new JobCategory(id)));
+                studyRequest.getSubCategory().forEach(id -> study.getJobCategoryList().add(new JobCategory(id)));
                 Study savedstudy=studyRepository.save(study);
                 System.out.println(studyRepository.save(study));
                 Users saveUsers = usersRepository.findById(users.getId()).get();
@@ -220,7 +220,7 @@ public class StudyService {
 
         //수정
         @Transactional
-        public ResponseEntity updateStudy(Users users, Long studyId,List<Long> sub_category, StudyRequest studyRequest, MultipartFile[] files) throws IOException {
+        public ResponseEntity updateStudy(Users users, Long studyId,StudyRequest studyRequest, MultipartFile[] files) throws IOException {
 
             try {
                 Study study = studyRepository.findById(studyId).orElseThrow(() -> new IllegalArgumentException(String.format("study is not Found!")));
@@ -232,7 +232,7 @@ public class StudyService {
                     study.setRegion(studyRequest.getRegion());
                     study.setContents(studyRequest.getContents());
                     List<JobCategory> jobCategoryList = new ArrayList<>();
-                    sub_category.forEach(id -> study.setJobCategoryList(Collections.singletonList(new JobCategory(id))));
+                    studyRequest.getSubCategory().forEach(jobCategoryId -> jobCategoryList.add(new JobCategory(jobCategoryId)));
                     study.setJobCategoryList(jobCategoryList);
                 }
 
