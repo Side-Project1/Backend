@@ -26,9 +26,8 @@ public class PromotionRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
     public List<PromotionPageResponse> findPagePromotion(Pageable pageable, String title, String contents, List<Long> subCategory) {
         return queryFactory.selectDistinct(
-                Projections.bean(PromotionPageResponse.class, promotions.id, promotions.title, users.userId, promotions.createdDate))
+                Projections.bean(PromotionPageResponse.class, promotions.id, promotions.title, promotions.users.userId, promotions.createdDate))
                         .from(promotions)
-                .join(users).on(promotions.users.id.eq(users.id))
                 .join(promotions.jobCategoryList, jobCategory)
                 .where(likeTitle(title), likeContents(contents), inSubCategory(subCategory))
                 .offset(pageable.getOffset())
