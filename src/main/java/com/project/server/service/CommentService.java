@@ -180,9 +180,9 @@ public class CommentService {
     public ResponseEntity getComment(Users users, Pageable pageable, Long promotionId) {
         try {
             List<CommentResponse> commentList = commentRepositoryCustom.findAllByPromotion(pageable, promotionId);
-
+            Promotions promotions = promotionRepository.findById(promotionId).orElseThrow(()->new IllegalStateException("게시글이 존재하지 않습니다"));
             commentList.forEach(data -> {
-                if (data.getIsPrivated().getValue().equals(EnumStatus.Status.Y.getValue()) && !data.getUserId().equals(users.getUserId())) {
+                if (data.getIsPrivated().getValue().equals(EnumStatus.Status.Y.getValue()) && (!data.getUserId().equals(users.getUserId()) && !promotions.getUsers().getUserId().equals(users.getUserId()))) {
                     data.setComments("비밀 댓글입니다");
                 }
             });
@@ -196,7 +196,6 @@ public class CommentService {
     public ResponseEntity getStudyComment(Users users, Pageable pageable, Long studyId) {
         try {
             List<StudyCommentResponse> commentList = commentRepositoryCustom.findAllByStudy(pageable, studyId);
-            System.out.println("댓글 조회"+ commentList);
 
             commentList.forEach(data -> {
                 if (data.getIsPrivated().getValue().equals(EnumStatus.Status.Y.getValue()) && !data.getUserId().equals(users.getUserId())) {
