@@ -1,3 +1,4 @@
+
 package com.project.server.service;
 
 import com.project.server.entity.*;
@@ -61,7 +62,7 @@ public class CommentService {
                 commentRepository.save(comment);
                 Users saveUsers = usersRepository.findById(users.getId()).get();
                 saveUsers.getCommentList().add(comment);
-                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK), HttpStatus.OK);
+                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK,comment), HttpStatus.OK);
             } else {
                 Comment parent = commentRepository.findById(commentRequest.getCommentId()).orElseThrow(()->new IllegalStateException("댓글이 존재하지 않습니다"));
 
@@ -78,7 +79,7 @@ public class CommentService {
                         .build();
                 commentRepository.save(comment);
                 commentRepository.updateAnswerNum(parent.getId());
-                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK), HttpStatus.OK);
+                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK,comment), HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes("댓글 작성 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -105,7 +106,7 @@ public class CommentService {
                 studyCommentRepository.save(studyComment);
                 Users saveUsers = usersRepository.findById(users.getId()).get();
                 saveUsers.getStudycommentList().add(studyComment);
-                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK), HttpStatus.OK);
+                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK,studyComment), HttpStatus.OK);
             } else {
                 StudyComment parent = studyCommentRepository.findById(studyCommentRequest.getCommentId()).orElseThrow(()->new IllegalStateException("댓글이 존재하지 않습니다"));
 
@@ -122,7 +123,7 @@ public class CommentService {
                         .build();
                 studyCommentRepository.save(studyComment);
                 commentRepository.updateAnswerNum(parent.getId());
-                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK), HttpStatus.OK);
+                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK,studyComment), HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes("댓글 작성 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -150,7 +151,7 @@ public class CommentService {
                 communityCommentRepository.save(communityComment);
                 Users saveUsers = usersRepository.findById(users.getId()).get();
                 saveUsers.getCommunityCommentList().add(communityComment);
-                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK), HttpStatus.OK);
+                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK,communityComment), HttpStatus.OK);
             } else {
                 CommunityComment parent = communityCommentRepository.findById(communityCommentRequest.getCommentId()).orElseThrow(()->new IllegalStateException("댓글이 존재하지 않습니다"));
 
@@ -167,7 +168,7 @@ public class CommentService {
                         .build();
                 communityCommentRepository.save(communityComment);
                 commentRepository.updateAnswerNum(parent.getId());
-                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK), HttpStatus.OK);
+                return new ResponseEntity(new ApiRes("댓글 작성 완료", HttpStatus.OK,communityComment), HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes("댓글 작성 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -180,9 +181,9 @@ public class CommentService {
     public ResponseEntity getComment(Users users, Pageable pageable, Long promotionId) {
         try {
             List<CommentResponse> commentList = commentRepositoryCustom.findAllByPromotion(pageable, promotionId);
-            Promotions promotions = promotionRepository.findById(promotionId).orElseThrow(()->new IllegalStateException("게시글이 존재하지 않습니다"));
+
             commentList.forEach(data -> {
-                if (data.getIsPrivated().getValue().equals(EnumStatus.Status.Y.getValue()) && (!data.getUserId().equals(users.getUserId()) && !promotions.getUsers().getUserId().equals(users.getUserId()))) {
+                if (data.getIsPrivated().getValue().equals(EnumStatus.Status.Y.getValue()) && !data.getUserId().equals(users.getUserId())) {
                     data.setComments("비밀 댓글입니다");
                 }
             });
@@ -196,6 +197,7 @@ public class CommentService {
     public ResponseEntity getStudyComment(Users users, Pageable pageable, Long studyId) {
         try {
             List<StudyCommentResponse> commentList = commentRepositoryCustom.findAllByStudy(pageable, studyId);
+            System.out.println("댓글 조회"+ commentList);
 
             commentList.forEach(data -> {
                 if (data.getIsPrivated().getValue().equals(EnumStatus.Status.Y.getValue()) && !data.getUserId().equals(users.getUserId())) {
@@ -298,7 +300,7 @@ public class CommentService {
         try {
             Comment comment = commentRepository.findById(commentId).get();
             comment.setComments(updateComment);
-            return new ResponseEntity(new ApiRes("댓글 수정 완료", HttpStatus.OK), HttpStatus.OK);
+            return new ResponseEntity(new ApiRes("댓글 수정 완료", HttpStatus.OK,comment), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes("댓글 수정 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
@@ -310,7 +312,7 @@ public class CommentService {
             StudyComment studyComment = studyCommentRepository.findById(commentId).get();
             System.out.println("studyComment"+studyComment);
             studyComment.setComments(updateComment);
-            return new ResponseEntity(new ApiRes("댓글 수정 완료", HttpStatus.OK), HttpStatus.OK);
+            return new ResponseEntity(new ApiRes("댓글 수정 완료", HttpStatus.OK,studyComment), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes("댓글 수정 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
@@ -321,7 +323,7 @@ public class CommentService {
         try {
             CommunityComment communityComment = communityCommentRepository.findById(commentId).get();
             communityComment.setComments(updateComment);
-            return new ResponseEntity(new ApiRes("댓글 수정 완료", HttpStatus.OK), HttpStatus.OK);
+            return new ResponseEntity(new ApiRes("댓글 수정 완료", HttpStatus.OK,communityComment), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new ApiRes("댓글 수정 실패", HttpStatus.BAD_REQUEST, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
